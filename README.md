@@ -20,6 +20,10 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 - 出力：架空のレート推移
 - 何が嬉しいか：「AGC〇〇 にさえ出てなかったら、俺今頃暖色コーダーだったのに...」みたいな感じがわかる
 
+## アーキテクチャ
+[ドキュメント](https://github.com/monkukui/atcoder-tarareba/edit/master/docs/)
+をみてください。
+
     
 ## イメージ
 
