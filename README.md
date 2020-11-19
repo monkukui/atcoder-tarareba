@@ -53,6 +53,8 @@ WEB への公開は GCP + Kubernetes を考えています。が、難しそう�
 
 
 #### アーキテクチャをまとめた図
+![tarareba_architecture](https://user-images.githubusercontent.com/47474057/99642940-71a10500-2a8f-11eb-91d5-626f8fdf5567.jpg)
+
 
 #### [参考: メルカリのブログ](https://engineering.mercari.com/blog/entry/2019-12-14-110000/)
 
