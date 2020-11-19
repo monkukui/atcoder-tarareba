@@ -22,7 +22,7 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 
 ## アーキテクチャ
 全体のアーキテクチャや使用技術をまとめています。
-[overview.md](https://github.com/monkukui/atcoder-tarareba/edit/master/docs/overview.md)
+[overview.md](https://github.com/monkukui/atcoder-tarareba/blob/master/docs/overview.md)
 をみてください。
 
     
