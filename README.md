@@ -25,7 +25,15 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 [overview.md](https://github.com/monkukui/atcoder-tarareba/blob/master/docs/overview.md)
 をみてください。
 
-    
+## todo
+- [x] ProtocolBuffer でコードの自動生成を試す
+- [x] gqlgen を使って GraphQL を試す
+- [ ] Apollo Client で GraphQL をつないで表示
+- [ ] GraphQL サーバーからマイクロサービスの api を叩いてデータを結合して表示
+- [ ] ドキュメントを書く
+- [ ] 各々のマイクロサービスのビジネスロジックを書く
+- [ ] フロントエンドをゴリゴリ書く
+
 ## イメージ
 
 ### ユーザー名入力前
