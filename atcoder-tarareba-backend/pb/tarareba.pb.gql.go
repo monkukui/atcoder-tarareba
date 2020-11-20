@@ -14,7 +14,8 @@ import (
 	"github.com/graphql-go/graphql"
 	"github.com/grpc-custom/graphql-gateway/runtime"
 	"github.com/grpc-custom/graphql-gateway/runtime/cache"
-	"github.com/grpc-custom/graphql-gateway/runtime/errors"
+
+	// "github.com/grpc-custom/graphql-gateway/runtime/errors"
 	"github.com/grpc-custom/graphql-gateway/runtime/scalar"
 	"golang.org/x/sync/singleflight"
 	"google.golang.org/grpc"
@@ -115,6 +116,6 @@ func RegisterTararebaServiceHandler(mux *runtime.ServeMux, conn *grpc.ClientConn
 }
 
 func RegisterTararebaServiceHandlerClient(mux *runtime.ServeMux, client TararebaServiceClient) error {
-	svc := newTararebaServiceResolver(client)
+	// svc := newTararebaServiceResolver(client)
 	return nil
 }
