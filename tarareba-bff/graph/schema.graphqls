@@ -1,0 +1,17 @@
+type Contest {
+  isRated: Boolean!
+  place: Int!
+  oldRating: Int!
+  newRating: Int!
+  performance: Int!
+  innerPerformance: Int!
+  contestScreenName: String!
+  contestName: String!
+  contestNameEn: String!
+  endTime: String!
+  isParticipated: Boolean!
+}
+
+type Query {
+  contestsByUserID(userID: String): [Contest!]!
+}
