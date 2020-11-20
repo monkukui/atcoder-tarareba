@@ -4,14 +4,14 @@ type Contest {
   oldRating: Int!
   newRating: Int!
   performance: Int!
-  innerPerformance: Int
-  contestScreenName: String
+  innerPerformance: Int!
+  contestScreenName: String!
   contestName: String!
   contestNameEn: String!
-  endTime: String
+  endTime: String!
   isParticipated: Boolean!
 }
 
-type Contests {
-  contestHistory: [Contest!]!
+type Query {
+  contestsByUserID(userID: String): [Contest!]!
 }
