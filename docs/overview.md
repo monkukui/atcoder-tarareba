@@ -20,7 +20,7 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 - AtCoder id を受け取り、パフォーマンス列（や、その他コンテストに関する情報）を構築する処理
     - ~~kenkooo さんあたりが api を提供しているなら、それを使う~~
     - ~~api がないなら、自前で AtCoder からスクレイピングしてくる~~
-    - https://atcoder.jp/users/monkukui/history/json　で json が取れるから簡単
+    - `https://atcoder.jp/users/monkukui/history/json`　でjson が取れる
             
 - パフォーマンス列を受け取り、レートを最大化させるアルゴリズムの実装
     - サービスの根幹ロジック
