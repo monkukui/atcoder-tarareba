@@ -1,0 +1,43 @@
+syntax = "proto3";
+package tarareba;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+service TararebaService {
+  // コンテスト参加履歴を返す
+  rpc GetCompetitionHistory(GetCompetitionHistoryRequest) returns (GetCompetitionHistoryResponse) {
+    // TODO option??? gql???
+  }
+}
+
+message GetCompetitionHistoryRequest {
+  // Required. AtCoder のユーザー ID。（例：monkukui）
+  string user_id = 1;
+}
+
+message GetCompetitionHistoryResponse {
+  // Required. rated かどうか
+  bool is_rated = 1;
+  // Required. 順位
+  uint32 place = 2;
+  // Required. 参加前のレート
+  uint32 old_rating = 3;
+  // Required. 参加後のレート
+  uint32 new_rating = 4;
+  // Required. パフォーマンス
+  uint32 performance = 5;
+  // Optional. 内部パフォーマンス
+  google.protobuf.UInt32Value inner_performance = 6;
+  // Optional. コンテストのスクリーンネーム（おそらく、フロント側でリンクをはるのに使う）
+  google.protobuf.StringValue contest_screen_name = 7;
+  // Required. コンテスト名
+  string contest_name = 8;
+  // Optional. コンテスト名（英語）
+  google.protobuf.StringValue contest_name_en = 9;
+  // Optional. コンテストの終了時刻
+  google.protobuf.Timestamp end_time = 10;
+
+  // Required. tarareba サービス内で、コンテストに参加したかどうか
+  bool is_participated = 20;
+}
