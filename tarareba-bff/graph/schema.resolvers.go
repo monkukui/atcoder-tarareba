@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"tarareba-bff/graph/generated"
 	"tarareba-bff/graph/model"
 )
@@ -38,6 +39,8 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 		EndTime:           "2000-10-10-1",
 		IsParticipated:    false,
 	})
+
+	fmt.Println("call graphql server")
 
 	return contests, nil
 }
