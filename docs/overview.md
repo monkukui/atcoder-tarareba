@@ -14,12 +14,8 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 - React （今一番いけてるフロントエンドのフレームワーク。AtCoder Problems もこれ） [参考](https://ja.reactjs.org/)
 - Appolo Client（GraphQL を React につなぐためのフレームワーク）[参考](https://www.apollographql.com/docs/react/)
 
-## 概要
-### 図
+## アーキテクチャ
 ![tarareba-arch](https://user-images.githubusercontent.com/47474057/99897124-49591680-2cda-11eb-9cc0-13add18ffb57.jpg)
-
-
-### アーキテクチャと全体の処理の流れ
 
 `atcoder-tarareba` は、マイクロサービスアーキテクチャを採用しています。
 
@@ -32,7 +28,7 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 
 `tarareba-frontend` は、TypeScript（React）で記述されたフロントエンドサーバーです。Apollo Client というフレームワークを用いて、上記の GraphQL サーバーと接続しています。
 
-
+## 処理の流れ
 処理の全体の流れは以下の通りです。競技プログラミングに例えると、インタラクティブ問題です。インタラクティブ問題を解いているつもりで考えてください。
 
 - `tarareba-frontend` は、ユーザーから `user_id（AtCoder ID）` を入力として受け取り、`tarareba-bff` にリクエストを投げる。
