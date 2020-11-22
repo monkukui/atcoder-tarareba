@@ -25,6 +25,16 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 [overview.md](https://github.com/monkukui/atcoder-tarareba/blob/master/docs/overview.md)
 をみてください。
 
+## 環境構築
+4 つのディレクトリがそれぞれ存在します。
+
+- `tarareba-frontend`
+- `tarareba-bff`
+- `tarareba-algorithms`
+- `tarareba-competition-history`
+
+各ディレクトリ直下の `README.md` に、環境構築にしかた、サーバーの立ち上げ方を書いています。そちらをご覧ください。
+
 ## todo
 - [x] ProtocolBuffer でコードの自動生成を試す
 - [x] gqlgen を使って GraphQL プレイグラウンド上で試す
