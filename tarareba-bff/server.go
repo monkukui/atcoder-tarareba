@@ -25,7 +25,7 @@ func main() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000/", "http://localhost:8080/"},
+		AllowedOrigins:   []string{"*"},
 		AllowCredentials: true,
 	})
 
