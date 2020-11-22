@@ -1,4 +1,4 @@
-AtCoder tarareba
+# AtCoder tarareba
 「このコンテストがなかっ**たら**、あのコンテストに参加していなけ**れば**」
 
 AtCoder tarareba は、過去を改竄してレートを最大化するサービスです。
@@ -6,7 +6,7 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 
 ## 使用技術
 **（注意）**
-個人的に試してみたい技術や、言語、フレームワークがあります。そのため、このプロダクトを開発することのみを目的とした場合、アーキテクチャが冗長に感じる場合があります。ごめん。
+興味ドリブンで技術選定しています。そのため、アーキテクチャが冗長に感じる可能性があります。
 
 - Go（サーバーサイド全般）（主要アルゴリズム）
 - gqlgen（Go で GraphQL を書くためのフレームワーク。サーバーサイドと GraphQL をつなぐ）[参考](https://gqlgen.com/getting-started/)
@@ -14,29 +14,45 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 - React （今一番いけてるフロントエンドのフレームワーク。AtCoder Problems もこれ） [参考](https://ja.reactjs.org/)
 - Appolo Client（GraphQL を React につなぐためのフレームワーク）[参考](https://www.apollographql.com/docs/react/)
 
-### 概要
-大きく分けて、やることは 3 つだと思っています。
-
-- AtCoder id を受け取り、パフォーマンス列（や、その他コンテストに関する情報）を構築する処理
-    - ~~kenkoooo さんあたりが api を提供しているなら、それを使う~~
-    - ~~api がないなら、自前で AtCoder からスクレイピングしてくる~~
-    - `https://atcoder.jp/users/monkukui/history/json`　でjson が取れる
-            
-- パフォーマンス列を受け取り、レートを最大化させるアルゴリズムの実装
-    - サービスの根幹ロジック
-    - DP + 復元をすれば良い？
-    - AtCoder のレーティングシステムを知る必要がある（[参考: qiita](https://qiita.com/anqooqie/items/92005e337a0d2569bdbd)）
-                         
-- フロントエンドの実装
-    - React を使う
-                                 
-
-これら 3 つの間のデータやりとりに、`GraphQL` という技術を使います。（ここがかなりマニアックです。一般的には、`REST` と呼ばれるプロトコルに従って、WEB 開発をします。なんか、`REST` に変わるナウいやつが、`GraphQL` だと思ってください。今回、この `GraphQL` を試してみたいというモチベーションがあります。）（monkukui がやる予定です。）
-
-WEB への公開は GCP + Kubernetes を考えています。が、難しそうであれば、heroku で公開します。（monkukui がやります。）
+## 概要
+### 図
+![tarareba-arch](https://user-images.githubusercontent.com/47474057/99897124-49591680-2cda-11eb-9cc0-13add18ffb57.jpg)
 
 
-#### アーキテクチャをまとめた図
-![tarareba_architecture](https://user-images.githubusercontent.com/47474057/99642940-71a10500-2a8f-11eb-91d5-626f8fdf5567.jpg)
+### アーキテクチャと全体の処理の流れ
 
-#### [参考: メルカリのブログ](https://engineering.mercari.com/blog/entry/2019-12-14-110000/)
+`atcoder-tarareba` は、マイクロサービスアーキテクチャを採用しています。
+
+現在、二つのマイクロサービスが存在します。
+
+- `tarareba-algorithms`：レート最大化や、レート計算を請け負う
+- `tarareba-competition-history`：コンテスト情報やパフォーマンスを取得する
+
+`tarareba-bff` は、これら二つのマイクロサービスから情報を取得し、フロントエンドに提供する役割を果たす GraphQL サーバーです。（BFF とは、Backend for Frontend の略です）
+
+`tarareba-frontend` は、TypeScript（React）で記述されたフロントエンドサーバーです。Apollo Client というフレームワークを用いて、上記の GraphQL サーバーと接続しています。
+
+
+処理の全体の流れは以下の通りです。競技プログラミングに例えると、インタラクティブ問題です。インタラクティブ問題を解いているつもりで考えてください。
+
+- `tarareba-frontend` は、ユーザーから `user_id（AtCoder ID）` を入力として受け取り、`tarareba-bff` にリクエストを投げる。
+- `tarareba-bff` は、`tarareba-frontedn` からリクエストを受け取り、`tarareba-competition-history` にリクエストを投げる。コンテスト情報を頂戴！！
+- `tarareba-competition-history` は、ユーザーのコンテスト情報を渡す。（https://atcoder.jp/users/monkukui/history っぽいやつ）
+- `tarareba-bff` は、`tarareba-competition-history` からコンテスト情報を受け取り、パフォーマンス列を `tarareba-algorithms` に渡す。レートを最大化してくれ！
+- `tarareba-algorithms` は、レートを最大化するアルゴリズムを走らせる。DP かもしれないし、貪欲法かもしれない。
+- `tarareba-bff` は、`tarareba-algorithms` から復元つきのレート最大化情報を受け取り、よしなに形式をまとめて、`tarareba-frontend` に渡す。
+- `tarareba-frontend` は、`tarareba-bff` からレスポンスを受け取り、WEB ページに表示させる。
+
+### マイクロサービスアーキテクチャの特徴
+
+マイクロサービスアーキテクチャの特徴として、
+
+- 責務がそれぞれ独立しているので、開発・テストが閉じた状態でできる
+- 変化に対応しやすい。アルゴリズムを変更したければ、`tarareba-algorithms` だけを修正すればよい
+
+などが挙げられます。
+もし、`tarareba-algorithms` と `tarareba-competition-history` を独立に処理できるなら、
+並行処理（concurrent）ができます。今回は、
+
+`tarareba-competition-history` からコンテスト情報を取得し、それを `tarareba-algorithms` に渡す必要があるので、並行処理ができません。
+（そもそも、独立じゃないのにマイクロサービスにして分離しているのは、破綻している気がしてきました。）
