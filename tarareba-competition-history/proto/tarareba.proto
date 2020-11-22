@@ -1,22 +1,16 @@
 syntax = "proto3";
 package tarareba;
 
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/wrappers.proto";
+option go_package = "../pb";
 
 service TararebaService {
   // コンテスト参加履歴を返す
   rpc GetCompetitionHistory(GetCompetitionHistoryRequest) returns (GetCompetitionHistoryResponse) {
-    // TODO option??? gql???
   }
 }
 
-message GetCompetitionHistoryRequest {
-  // Required. AtCoder のユーザー ID。（例：monkukui）
-  string user_id = 1;
-}
+message CompetitionHistory {
 
-message GetCompetitionHistoryResponse {
   // Required. rated かどうか
   bool is_rated = 1;
   // Required. 順位
@@ -27,17 +21,29 @@ message GetCompetitionHistoryResponse {
   uint32 new_rating = 4;
   // Required. パフォーマンス
   uint32 performance = 5;
-  // Optional. 内部パフォーマンス
-  google.protobuf.UInt32Value inner_performance = 6;
-  // Optional. コンテストのスクリーンネーム（おそらく、フロント側でリンクをはるのに使う）
-  google.protobuf.StringValue contest_screen_name = 7;
+  // Required. 内部パフォーマンス
+  uint32 inner_performance = 6;
+  // Required. コンテストのスクリーンネーム（おそらく、フロント側でリンクをはるのに使う）
+  string contest_screen_name = 7;
   // Required. コンテスト名
   string contest_name = 8;
-  // Optional. コンテスト名（英語）
-  google.protobuf.StringValue contest_name_en = 9;
-  // Optional. コンテストの終了時刻
-  google.protobuf.Timestamp end_time = 10;
+  // Required. コンテスト名（英語）
+  string contest_name_en = 9;
+  // Required. コンテストの終了時刻
+  string end_time = 10;
 
   // Required. tarareba サービス内で、コンテストに参加したかどうか
   bool is_participated = 20;
+}
+
+message GetCompetitionHistoryRequest {
+
+  // Required. AtCoder のユーザー ID。（例：monkukui）
+  string user_id = 1;
+}
+
+message GetCompetitionHistoryResponse {
+
+  // Required. 出場したコンテストのリスト
+  repeated CompetitionHistory competition_history = 1;
 }

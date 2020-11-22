@@ -9,3 +9,11 @@
 ```
 go run server/main.go
 ```
+
+
+## コード自動生成
+```
+cd proto
+protoc --go_out=plugins=grpc:../pb tarareba.proto
+```
+`pb` 以下にコードが自動生成される
