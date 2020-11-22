@@ -35,7 +35,6 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 
 上の図と合わせてみると、理解しやすいと思います。
 
-処理の全体の流れは以下の通りです。競技プログラミングに例えると、インタラクティブ問題です。インタラクティブ問題を解いているつもりで考えてください。
 - `tarareba-frontend` は、ユーザーから `user_id（AtCoder ID）` を入力として受け取り、`tarareba-bff` にリクエストを投げる。
 - `tarareba-bff` は、`tarareba-frontedn` からリクエストを受け取り、`tarareba-competition-history` にリクエストを投げる。コンテスト情報を頂戴！！
 - `tarareba-competition-history` は、ユーザーのコンテスト情報を渡す。（https://atcoder.jp/users/monkukui/history っぽいやつ）
