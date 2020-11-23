@@ -21,8 +21,7 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 	defer conn.Close()
 	client := pb.NewTararebaServiceClient(conn)
 
-	userId := "monkukui"
-	message := &pb.GetCompetitionHistoryRequest{UserId: userId}
+	message := &pb.GetCompetitionHistoryRequest{UserId: *userID}
 	res, err := client.GetCompetitionHistory(context.TODO(), message)
 	if err != nil {
 		return nil, err
@@ -45,34 +44,6 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 			IsParticipated:    contest.IsParticipated,
 		})
 	}
-
-	// contests = append(contests, &model.Contest{
-	// 	IsRated:           true,
-	// 	Place:             128,
-	// 	OldRating:         0,
-	// 	NewRating:         10,
-	// 	Performance:       1000,
-	// 	InnerPerformance:  1,
-	// 	ContestScreenName: "atcoder.jp",
-	// 	ContestName:       "AtCoder Grand Contest 001",
-	// 	ContestNameEn:     "",
-	// 	EndTime:           "2020-10-10-1",
-	// 	IsParticipated:    true,
-	// })
-
-	// contests = append(contests, &model.Contest{
-	// 	IsRated:           true,
-	// 	Place:             528,
-	// 	OldRating:         110,
-	// 	NewRating:         1011,
-	// 	Performance:       4000,
-	// 	InnerPerformance:  1111,
-	// 	ContestScreenName: "atcoder.jp",
-	// 	ContestName:       "AtCoder Grand Contest 111",
-	// 	ContestNameEn:     "",
-	// 	EndTime:           "2000-10-10-1",
-	// 	IsParticipated:    false,
-	// })
 
 	return contests, nil
 }
