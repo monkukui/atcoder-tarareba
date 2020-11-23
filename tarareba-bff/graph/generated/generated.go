@@ -43,6 +43,8 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Contest struct {
+		ActualNewRating   func(childComplexity int) int
+		ActualOldRating   func(childComplexity int) int
 		ContestName       func(childComplexity int) int
 		ContestNameEn     func(childComplexity int) int
 		ContestScreenName func(childComplexity int) int
@@ -50,8 +52,8 @@ type ComplexityRoot struct {
 		InnerPerformance  func(childComplexity int) int
 		IsParticipated    func(childComplexity int) int
 		IsRated           func(childComplexity int) int
-		NewRating         func(childComplexity int) int
-		OldRating         func(childComplexity int) int
+		OptimalNewRating  func(childComplexity int) int
+		OptimalOldRating  func(childComplexity int) int
 		Performance       func(childComplexity int) int
 		Place             func(childComplexity int) int
 	}
@@ -79,6 +81,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "Contest.actualNewRating":
+		if e.complexity.Contest.ActualNewRating == nil {
+			break
+		}
+
+		return e.complexity.Contest.ActualNewRating(childComplexity), true
+
+	case "Contest.actualOldRating":
+		if e.complexity.Contest.ActualOldRating == nil {
+			break
+		}
+
+		return e.complexity.Contest.ActualOldRating(childComplexity), true
 
 	case "Contest.contestName":
 		if e.complexity.Contest.ContestName == nil {
@@ -129,19 +145,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Contest.IsRated(childComplexity), true
 
-	case "Contest.newRating":
-		if e.complexity.Contest.NewRating == nil {
+	case "Contest.optimalNewRating":
+		if e.complexity.Contest.OptimalNewRating == nil {
 			break
 		}
 
-		return e.complexity.Contest.NewRating(childComplexity), true
+		return e.complexity.Contest.OptimalNewRating(childComplexity), true
 
-	case "Contest.oldRating":
-		if e.complexity.Contest.OldRating == nil {
+	case "Contest.optimalOldRating":
+		if e.complexity.Contest.OptimalOldRating == nil {
 			break
 		}
 
-		return e.complexity.Contest.OldRating(childComplexity), true
+		return e.complexity.Contest.OptimalOldRating(childComplexity), true
 
 	case "Contest.performance":
 		if e.complexity.Contest.Performance == nil {
@@ -222,14 +238,16 @@ var sources = []*ast.Source{
 	{Name: "graph/schema.graphqls", Input: `type Contest {
   isRated: Boolean!
   place: Int!
-  oldRating: Int!
-  newRating: Int!
+  actualOldRating: Int!
+  actualNewRating: Int!
   performance: Int!
   innerPerformance: Int!
   contestScreenName: String!
   contestName: String!
   contestNameEn: String!
   endTime: String!
+  optimalOldRating: Int!
+  optimalNewRating: Int!
   isParticipated: Boolean!
 }
 
@@ -382,7 +400,7 @@ func (ec *executionContext) _Contest_place(ctx context.Context, field graphql.Co
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contest_oldRating(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contest_actualOldRating(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -400,7 +418,7 @@ func (ec *executionContext) _Contest_oldRating(ctx context.Context, field graphq
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.OldRating, nil
+		return obj.ActualOldRating, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -417,7 +435,7 @@ func (ec *executionContext) _Contest_oldRating(ctx context.Context, field graphq
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Contest_newRating(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contest_actualNewRating(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -435,7 +453,7 @@ func (ec *executionContext) _Contest_newRating(ctx context.Context, field graphq
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.NewRating, nil
+		return obj.ActualNewRating, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -660,6 +678,76 @@ func (ec *executionContext) _Contest_endTime(ctx context.Context, field graphql.
 	res := resTmp.(string)
 	fc.Result = res
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Contest_optimalOldRating(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Contest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OptimalOldRating, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Contest_optimalNewRating(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Contest",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OptimalNewRating, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Contest_isParticipated(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
@@ -1926,13 +2014,13 @@ func (ec *executionContext) _Contest(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "oldRating":
-			out.Values[i] = ec._Contest_oldRating(ctx, field, obj)
+		case "actualOldRating":
+			out.Values[i] = ec._Contest_actualOldRating(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "newRating":
-			out.Values[i] = ec._Contest_newRating(ctx, field, obj)
+		case "actualNewRating":
+			out.Values[i] = ec._Contest_actualNewRating(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -1963,6 +2051,16 @@ func (ec *executionContext) _Contest(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "endTime":
 			out.Values[i] = ec._Contest_endTime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "optimalOldRating":
+			out.Values[i] = ec._Contest_optimalOldRating(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "optimalNewRating":
+			out.Values[i] = ec._Contest_optimalNewRating(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

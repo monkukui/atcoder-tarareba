@@ -14,7 +14,6 @@ import (
 )
 
 func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([]*model.Contest, error) {
-
 	connHistory, err := grpc.Dial("127.0.0.1:19003", grpc.WithInsecure())
 	if err != nil {
 		return nil, err
@@ -68,14 +67,16 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 		contests = append(contests, &model.Contest{
 			IsRated:           contest.IsRated,
 			Place:             int(contest.Place),
-			OldRating:         int(contest.OldRating),
-			NewRating:         int(contest.NewRating),
+			ActualOldRating:   int(contest.OldRating),
+			ActualNewRating:   int(contest.NewRating),
 			Performance:       int(contest.Performance),
 			InnerPerformance:  int(contest.InnerPerformance),
 			ContestScreenName: contest.ContestScreenName,
 			ContestName:       contest.ContestName,
 			ContestNameEn:     contest.ContestNameEn,
 			EndTime:           contest.EndTime,
+			OptimalOldRating:  int(optimal.OldRating),
+			OptimalNewRating:  int(optimal.NewRating),
 			IsParticipated:    optimal.IsParticipated,
 		})
 	}

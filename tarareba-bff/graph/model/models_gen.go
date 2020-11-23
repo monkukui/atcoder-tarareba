@@ -5,13 +5,15 @@ package model
 type Contest struct {
 	IsRated           bool   `json:"isRated"`
 	Place             int    `json:"place"`
-	OldRating         int    `json:"oldRating"`
-	NewRating         int    `json:"newRating"`
+	ActualOldRating   int    `json:"actualOldRating"`
+	ActualNewRating   int    `json:"actualNewRating"`
 	Performance       int    `json:"performance"`
 	InnerPerformance  int    `json:"innerPerformance"`
 	ContestScreenName string `json:"contestScreenName"`
 	ContestName       string `json:"contestName"`
 	ContestNameEn     string `json:"contestNameEn"`
 	EndTime           string `json:"endTime"`
+	OptimalOldRating  int    `json:"optimalOldRating"`
+	OptimalNewRating  int    `json:"optimalNewRating"`
 	IsParticipated    bool   `json:"isParticipated"`
 }

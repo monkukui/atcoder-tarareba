@@ -6,14 +6,16 @@ export const GET_CONTEST_HISTORY = gql`
     contestsByUserID(userID: "monkukui") {
       isRated
       place
-      oldRating
-      newRating
+      actualOldRating
+      actualNewRating
       performance
       innerPerformance
       contestScreenName
       contestName
       contestNameEn
       endTime
+      optimalOldRating
+      optimalNewRating
       isParticipated
     }
   }

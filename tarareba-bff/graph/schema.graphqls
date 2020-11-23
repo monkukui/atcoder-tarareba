@@ -1,14 +1,16 @@
 type Contest {
   isRated: Boolean!
   place: Int!
-  oldRating: Int!
-  newRating: Int!
+  actualOldRating: Int!
+  actualNewRating: Int!
   performance: Int!
   innerPerformance: Int!
   contestScreenName: String!
   contestName: String!
   contestNameEn: String!
   endTime: String!
+  optimalOldRating: Int!
+  optimalNewRating: Int!
   isParticipated: Boolean!
 }
 

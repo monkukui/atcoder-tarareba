@@ -6,14 +6,16 @@ import { useQuery } from 'react-apollo-hooks';
 interface Contest {
   isRated: boolean;
   place: number;
-  oldRating: number;
-  newRating: number;
+  actualOldRating: number;
+  actualNewRating: number;
   performance: number;
   innerPerformance: number;
   contestScreenName: string;
   contestName: string;
   contestNameEn: string;
   endTime: string;
+  optimalOldRating: number;
+  optimalNewRating: number;
   isParticipated: boolean;
 }
 
@@ -43,13 +45,15 @@ const ContestHistory = () => {
               </>
             )} 
             : place = {contest.place}
-            : oldRating = {contest.oldRating}
-            : newRating = {contest.newRating}
+            : actualOldRating = {contest.actualOldRating}
+            : actualNewRating = {contest.actualNewRating}
             : performance = {contest.performance}
             : innerPerformance = {contest.innerPerformance}
             : contestScreenName = {contest.contestScreenName}
             : contestName = {contest.contestName}
             : contestNameEn = {contest.contestNameEn}
+            : optimalOldRating = {contest.optimalOldRating}
+            : optimalNewRating = {contest.optimalNewRating}
             : isParticipated = {contest.isParticipated ? (
               <>
                 true
