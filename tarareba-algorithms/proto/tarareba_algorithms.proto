@@ -1,7 +1,7 @@
 syntax = "proto3";
-package tarareba;
+package tarareba_algorithms;
 
-option go_package = "../pb";
+option go_package = "../tarareba_algorithms_pb";
 
 service TararebaService {
 
