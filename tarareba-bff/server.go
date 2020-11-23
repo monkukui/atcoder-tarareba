@@ -4,8 +4,9 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"tarareba-bff/graph"
-	"tarareba-bff/graph/generated"
+
+	"github.com/monkukui/atcoder-tarareba/tarareba-bff/graph"
+	"github.com/monkukui/atcoder-tarareba/tarareba-bff/graph/generated"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"

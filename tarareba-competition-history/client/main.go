@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	pb "../pb"
+	pb "github.com/monkukui/atcoder-tarareba/tarareba-competition-history/pb"
 
 	"google.golang.org/grpc"
 )
@@ -32,7 +32,6 @@ func main() {
 	fmt.Println("")
 
 	if err == nil {
-		fmt.Println("contest: ", res.ContestName)
-		fmt.Println("Performance: ", res.Performance)
+		fmt.Println(res)
 	}
 }

@@ -4,9 +4,17 @@ import gql from 'graphql-tag';
 export const GET_CONTEST_HISTORY = gql`
   query {
     contestsByUserID(userID: "monkukui") {
+      isRated
+      place
+      oldRating
+      newRating
       performance
-      isParticipated
+      innerPerformance
+      contestScreenName
       contestName
+      contestNameEn
+      endTime
+      isParticipated
     }
   }
 `

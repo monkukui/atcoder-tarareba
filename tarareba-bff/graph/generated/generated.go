@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
-	"tarareba-bff/graph/model"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/monkukui/atcoder-tarareba/tarareba-bff/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -736,7 +736,7 @@ func (ec *executionContext) _Query_contestsByUserID(ctx context.Context, field g
 	}
 	res := resTmp.([]*model.Contest)
 	fc.Result = res
-	return ec.marshalNContest2ᚕᚖtararebaᚑbffᚋgraphᚋmodelᚐContestᚄ(ctx, field.Selections, res)
+	return ec.marshalNContest2ᚕᚖgithubᚗcomᚋmonkukuiᚋatcoderᚑtararebaᚋtararebaᚑbffᚋgraphᚋmodelᚐContestᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2286,7 +2286,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNContest2ᚕᚖtararebaᚑbffᚋgraphᚋmodelᚐContestᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Contest) graphql.Marshaler {
+func (ec *executionContext) marshalNContest2ᚕᚖgithubᚗcomᚋmonkukuiᚋatcoderᚑtararebaᚋtararebaᚑbffᚋgraphᚋmodelᚐContestᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Contest) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -2310,7 +2310,7 @@ func (ec *executionContext) marshalNContest2ᚕᚖtararebaᚑbffᚋgraphᚋmodel
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNContest2ᚖtararebaᚑbffᚋgraphᚋmodelᚐContest(ctx, sel, v[i])
+			ret[i] = ec.marshalNContest2ᚖgithubᚗcomᚋmonkukuiᚋatcoderᚑtararebaᚋtararebaᚑbffᚋgraphᚋmodelᚐContest(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -2323,7 +2323,7 @@ func (ec *executionContext) marshalNContest2ᚕᚖtararebaᚑbffᚋgraphᚋmodel
 	return ret
 }
 
-func (ec *executionContext) marshalNContest2ᚖtararebaᚑbffᚋgraphᚋmodelᚐContest(ctx context.Context, sel ast.SelectionSet, v *model.Contest) graphql.Marshaler {
+func (ec *executionContext) marshalNContest2ᚖgithubᚗcomᚋmonkukuiᚋatcoderᚑtararebaᚋtararebaᚑbffᚋgraphᚋmodelᚐContest(ctx context.Context, sel ast.SelectionSet, v *model.Contest) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
