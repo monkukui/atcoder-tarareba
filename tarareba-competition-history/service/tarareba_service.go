@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	pb "github.com/monkukui/atcoder-tarareba/tarareba-competition-history/pb"
+	pb "github.com/monkukui/atcoder-tarareba/tarareba-competition-history/tarareba_competition_history_pb"
 )
 
 type TararebaService struct {

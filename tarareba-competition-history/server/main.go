@@ -5,8 +5,8 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/monkukui/atcoder-tarareba/tarareba-competition-history/pb"
 	service "github.com/monkukui/atcoder-tarareba/tarareba-competition-history/service"
+	pb "github.com/monkukui/atcoder-tarareba/tarareba-competition-history/tarareba_competition_history_pb"
 
 	"google.golang.org/grpc"
 )

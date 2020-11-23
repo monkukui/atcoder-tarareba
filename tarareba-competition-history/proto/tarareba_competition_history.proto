@@ -1,7 +1,7 @@
 syntax = "proto3";
-package tarareba;
+package tarareba_competition_history;
 
-option go_package = "../pb";
+option go_package = "../tarareba_competition_history_pb";
 
 service TararebaService {
   // コンテスト参加履歴を返す
