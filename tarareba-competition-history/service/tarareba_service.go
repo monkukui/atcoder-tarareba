@@ -20,9 +20,9 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 		IsRated:           true,
 		Place:             429,
 		OldRating:         0,
-		NewRating:         11,
-		Performance:       157,
-		InnerPerformance:  200,
+		NewRating:         111,
+		Performance:       1571,
+		InnerPerformance:  2001111111,
 		ContestScreenName: "atcoder.com",
 		ContestName:       "AtCoder Beginner Contest 058",
 		ContestNameEn:     "",
@@ -33,7 +33,6 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 	res = append(res, competition_history)
 	res = append(res, competition_history)
 	res = append(res, competition_history)
-	res = append(res, competition_history)
 
 	switch message.UserId {
 	case "monkukui":
@@ -41,17 +40,6 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 			CompetitionHistory: res,
 		}, nil
 	}
-	// case "olphe":
-	// 	return &pb.GetCompetitionHistoryResponse{
-	// 		IsRated:        true,
-	// 		Place:          525,
-	// 		OldRating:      0,
-	// 		NewRating:      146,
-	// 		Performance:    1197,
-	// 		ContestName:    "AtCoder Grand Contest 003",
-	// 		IsParticipated: true,
-	// 	}, nil
-	// }
 
 	return nil, errors.New("user is not monkukui or olphe")
 }
