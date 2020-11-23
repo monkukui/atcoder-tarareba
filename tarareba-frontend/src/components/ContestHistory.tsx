@@ -4,9 +4,17 @@ import { GET_CONTEST_HISTORY } from "../graphql/tags/getContestHistory";
 import { useQuery } from 'react-apollo-hooks';
 
 interface Contest {
+  isRated: boolean;
+  place: number;
+  oldRating: number;
+  newRating: number;
   performance: number;
-  isParticipated: boolean;
+  innerPerformance: number;
+  contestScreenName: string;
   contestName: string;
+  contestNameEn: string;
+  endTime: string;
+  isParticipated: boolean;
 }
 
 interface Contests {
@@ -24,7 +32,34 @@ const ContestHistory = () => {
     <>
       <ul>
         {data!.contestsByUserID.map(contest => (
-          <li>{contest.contestName} : {contest.performance} : {contest.isParticipated}</li>
+          <li>
+            isRated = {contest.isRated ? (
+              <>
+                true
+              </>
+            ) : (
+              <>
+                false
+              </>
+            )} 
+            : place = {contest.place}
+            : oldRating = {contest.oldRating}
+            : newRating = {contest.newRating}
+            : performance = {contest.performance}
+            : innerPerformance = {contest.innerPerformance}
+            : contestScreenName = {contest.contestScreenName}
+            : contestName = {contest.contestName}
+            : contestNameEn = {contest.contestNameEn}
+            : isParticipated = {contest.isParticipated ? (
+              <>
+                true
+              </>
+            ) : (
+              <>
+                false
+              </>
+            )} 
+          </li>
         ))}
       </ul>
     </>
