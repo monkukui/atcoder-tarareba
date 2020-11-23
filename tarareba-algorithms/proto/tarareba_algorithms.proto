@@ -1,0 +1,43 @@
+syntax = "proto3";
+package tarareba_algorithms;
+
+option go_package = "../tarareba_algorithms_pb";
+
+service TararebaService {
+
+  // コンテスト参加履歴を返す
+  rpc GetOptimalHistory(GetOptimalHistoryRequest) returns (GetOptimalHistoryResponse) {
+  }
+}
+
+message ActualHistory {
+
+  // Required. rated かどうか
+  bool is_rated = 1;
+  // Required. パフォーマンス
+  uint32 performance = 5;
+  // Required. 内部パフォーマンス
+  uint32 inner_performance = 6;
+}
+
+message OptimalHistory {
+
+  // Required. 参加前のレート
+  uint32 old_rating = 3;
+  // Required. 参加後のレート
+  uint32 new_rating = 4;
+  // Required. 空想上で、参加するかどうか
+  bool isParticipated = 7;
+}
+
+message GetOptimalHistoryRequest {
+
+  // Required. 実際のコンテスト履歴のリスト
+  repeated ActualHistory actual_history = 1;
+}
+
+message GetOptimalHistoryResponse {
+
+  // Required. 最適化後の出場コンテストのリスト
+  repeated OptimalHistory optimal_history = 1;
+}

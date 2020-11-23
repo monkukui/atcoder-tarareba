@@ -5,8 +5,8 @@ import (
 	"log"
 	"net"
 
-	service "github.com/monkukui/atcoder-tarareba/tarareba-competition-history/service"
-	pb "github.com/monkukui/atcoder-tarareba/tarareba-competition-history/tarareba_competition_history_pb"
+	service "github.com/monkukui/atcoder-tarareba/tarareba-algorithms/service"
+	pb "github.com/monkukui/atcoder-tarareba/tarareba-algorithms/tarareba_algorithms_pb"
 
 	"google.golang.org/grpc"
 )
@@ -14,7 +14,8 @@ import (
 func main() {
 	fmt.Println("run..")
 
-	listenPort, err := net.Listen("tcp", ":19003")
+	// listenPort, err := net.Listen("tcp", ":19003")
+	listenPort, err := net.Listen("tcp", ":19004") // これ、19004 にしました
 	if err != nil {
 		log.Fatalln(err)
 	}

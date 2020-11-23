@@ -1,7 +1,7 @@
 syntax = "proto3";
-package tarareba;
+package tarareba_competition_history;
 
-option go_package = "../pb";
+option go_package = "../tarareba_competition_history_pb";
 
 service TararebaService {
   // コンテスト参加履歴を返す
@@ -31,9 +31,6 @@ message CompetitionHistory {
   string contest_name_en = 9;
   // Required. コンテストの終了時刻
   string end_time = 10;
-
-  // Required. tarareba サービス内で、コンテストに参加したかどうか
-  bool is_participated = 20;
 }
 
 message GetCompetitionHistoryRequest {
