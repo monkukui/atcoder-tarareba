@@ -29,7 +29,7 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 
 	contests := make([]*model.Contest, 0, len(res.CompetitionHistory))
 
-	for _, contest := range res.CompetitionHistory {
+	for i, contest := range res.CompetitionHistory {
 		contests = append(contests, &model.Contest{
 			IsRated:           contest.IsRated,
 			Place:             int(contest.Place),
@@ -41,7 +41,7 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 			ContestName:       contest.ContestName,
 			ContestNameEn:     contest.ContestNameEn,
 			EndTime:           contest.EndTime,
-			IsParticipated:    contest.IsParticipated,
+			IsParticipated:    i%2 == 0, // 適当
 		})
 	}
 

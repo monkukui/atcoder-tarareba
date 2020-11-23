@@ -27,7 +27,6 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 		ContestName:       "AtCoder Beginner Contest 058",
 		ContestNameEn:     "",
 		EndTime:           "2020-02-02",
-		IsParticipated:    true,
 	}
 
 	var res []*pb.CompetitionHistory
