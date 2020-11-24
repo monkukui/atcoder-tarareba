@@ -8,13 +8,13 @@ import {
 
 import { appClient } from './graphql/client';
 
-import ContestHistory from './components/ContestHistory';
+import TopPage from './components/TopPage';
 
 const App = () => {
   return (
     <ApolloProvider client={appClient}>
       <ApolloHooksProvider client={appClient}>
-        <ContestHistory />
+        <TopPage />
       </ApolloHooksProvider>
     </ApolloProvider>
   );
