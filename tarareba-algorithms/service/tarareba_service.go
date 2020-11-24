@@ -16,13 +16,14 @@ func NewTararebaService() *TararebaService {
 func (s *TararebaService) GetOptimalHistory(ctx context.Context, message *pb.GetOptimalHistoryRequest) (*pb.GetOptimalHistoryResponse, error) {
 
 	var res []*pb.OptimalHistory
-	rating := 0
+	rating := int32(0)
 	for i := 0; i < len(message.ActualHistory); i++ {
 		res = append(res, &pb.OptimalHistory{
-			OldRating:      uint32(rating),
-			NewRating:      uint32(rating + 100),
+			OldRating:      rating,
+			NewRating:      rating + 100,
 			IsParticipated: false,
 		})
+		rating += 100
 	}
 
 	return &pb.GetOptimalHistoryResponse{

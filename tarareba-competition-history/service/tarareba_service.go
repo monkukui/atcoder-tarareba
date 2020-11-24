@@ -44,11 +44,11 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 	for _, contest := range contests {
 		history = append(history, &pb.CompetitionHistory{
 			IsRated:           contest.IsRated,
-			Place:             uint32(contest.Place),
-			OldRating:         uint32(contest.OldRating),
-			NewRating:         uint32(contest.NewRating),
-			Performance:       uint32(contest.Performance),
-			InnerPerformance:  uint32(contest.InnerPerformance),
+			Place:             contest.Place,
+			OldRating:         contest.OldRating,
+			NewRating:         contest.NewRating,
+			Performance:       contest.Performance,
+			InnerPerformance:  contest.InnerPerformance,
 			ContestScreenName: contest.ContestScreenName,
 			ContestName:       contest.ContestName,
 			ContestNameEn:     contest.ContestNameEn,
@@ -64,11 +64,11 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 type (
 	Contest struct {
 		IsRated           bool   `json:"IsRated"`
-		Place             int    `json:"Place"`
-		OldRating         int    `json:"OldRating"`
-		NewRating         int    `json:"NewRating"`
-		Performance       int    `json:"Performance"`
-		InnerPerformance  int    `json:"InnerPerformance"`
+		Place             int32  `json:"Place"`
+		OldRating         int32  `json:"OldRating"`
+		NewRating         int32  `json:"NewRating"`
+		Performance       int32  `json:"Performance"`
+		InnerPerformance  int32  `json:"InnerPerformance"`
 		ContestScreenName string `json:"ContestScreenName"`
 		ContestName       string `json:"ContestName"`
 		ContestNameEn     string `json:"ContestNameEn"`
