@@ -23,15 +23,25 @@ interface Contests {
   contestsByUserID: Contest[];
 }
 
-const ContestHistory = () => {
+type Props = {
+  userID: string
+}
+
+const ContestHistory: React.FC<Props> = (props) => {
+
   // マウント時にリクエストが走る
-  const { loading, error, data } = useQuery<Contests>(GET_CONTEST_HISTORY, {});
+  const { loading, error, data } = useQuery<Contests>(GET_CONTEST_HISTORY, {
+    variables: {
+      userID: props.userID
+    },
+  });
 
   if (loading) return <div>loading</div>;
   if (error) return <div>error</div>;
 
   return (
     <>
+      <strong>userID = {props.userID}</strong>
       <ul>
         {data!.contestsByUserID.map(contest => (
           <li>
