@@ -7,7 +7,6 @@ import {
 } from 'react-apollo-hooks';
 
 import { appClient } from './graphql/client';
-import { GET_CONTEST_HISTORY } from './graphql/tags/getContestHistory';
 
 import ContestHistory from './components/ContestHistory';
 
