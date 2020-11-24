@@ -1,26 +1,30 @@
-import React from 'react';
-import { GET_CONTEST_HISTORY } from "../graphql/tags/getContestHistory";
+import React from 'react'
+import { GET_CONTEST_HISTORY } from '../graphql/tags/getContestHistory'
 
-import { useQuery } from 'react-apollo-hooks';
+import { useQuery } from 'react-apollo-hooks'
+
+import { Table } from 'semantic-ui-react'
+
+import getRatingColorStyle, { ratingColors } from '../utils/getRatingColorStyle'
 
 interface Contest {
-  isRated: boolean;
-  place: number;
-  actualOldRating: number;
-  actualNewRating: number;
-  performance: number;
-  innerPerformance: number;
-  contestScreenName: string;
-  contestName: string;
-  contestNameEn: string;
-  endTime: string;
-  optimalOldRating: number;
-  optimalNewRating: number;
-  isParticipated: boolean;
+  isRated: boolean
+  place: number
+  actualOldRating: number
+  actualNewRating: number
+  performance: number
+  innerPerformance: number
+  contestScreenName: string
+  contestName: string
+  contestNameEn: string
+  endTime: string
+  optimalOldRating: number
+  optimalNewRating: number
+  isParticipated: boolean
 }
 
 interface Contests {
-  contestsByUserID: Contest[];
+  contestsByUserID: Contest[]
 }
 
 type Props = {
@@ -28,56 +32,84 @@ type Props = {
 }
 
 const ContestHistory: React.FC<Props> = (props) => {
-
   // マウント時にリクエストが走る
   const { loading, error, data } = useQuery<Contests>(GET_CONTEST_HISTORY, {
     variables: {
-      userID: props.userID
+      userID: props.userID,
     },
-  });
+  })
 
-  if (loading) return <div>loading</div>;
-  if (error) return <div>error</div>;
+  if (loading) return <div>loading</div>
+  if (error) return <div>error</div>
 
   return (
     <>
-      <strong>userID = {props.userID}</strong>
-      <ul>
-        {data!.contestsByUserID.map(contest => (
-          <li>
-            isRated = {contest.isRated ? (
-              <>
-                true
-              </>
-            ) : (
-              <>
-                false
-              </>
-            )} 
-            : place = {contest.place}
-            : actualOldRating = {contest.actualOldRating}
-            : actualNewRating = {contest.actualNewRating}
-            : performance = {contest.performance}
-            : innerPerformance = {contest.innerPerformance}
-            : contestScreenName = {contest.contestScreenName}
-            : contestName = {contest.contestName}
-            : contestNameEn = {contest.contestNameEn}
-            : optimalOldRating = {contest.optimalOldRating}
-            : optimalNewRating = {contest.optimalNewRating}
-            : isParticipated = {contest.isParticipated ? (
-              <>
-                true
-              </>
-            ) : (
-              <>
-                false
-              </>
-            )} 
-          </li>
-        ))}
-      </ul>
-    </>
-  );
-};
+      <div style={{ margin: '5em' }}>
+        <Table celled={true}>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>日付け</Table.HeaderCell>
+              <Table.HeaderCell>コンテスト</Table.HeaderCell>
+              <Table.HeaderCell>順位</Table.HeaderCell>
+              <Table.HeaderCell>パフォーマンス</Table.HeaderCell>
+              <Table.HeaderCell>実際の Rating</Table.HeaderCell>
+              <Table.HeaderCell>架空の Rating</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
 
-export default ContestHistory;
+          <Table.Body>
+            {data!.contestsByUserID.map((record) => {
+              return (
+                <Table.Row key={record.endTime}>
+                  <Table.Cell>{record.endTime}</Table.Cell>
+                  <Table.Cell>
+                    <a
+                      target="_blank"
+                      href={'https://' + record.contestScreenName}
+                    >
+                      {record.contestName}
+                    </a>
+                  </Table.Cell>
+                  <Table.Cell>{record.place}</Table.Cell>
+                  {record.isRated ? (
+                    <>
+                      <Table.Cell
+                        style={getRatingColorStyle(record.performance)}
+                      >
+                        {record.performance}
+                      </Table.Cell>
+                      <Table.Cell
+                        style={getRatingColorStyle(record.actualNewRating)}
+                      >
+                        {record.actualNewRating}
+                      </Table.Cell>
+                      {record.isParticipated ? (
+                        <>
+                          <Table.Cell
+                            style={getRatingColorStyle(record.optimalNewRating)}
+                          >
+                            {record.optimalNewRating}
+                          </Table.Cell>
+                        </>
+                      ) : (
+                        <Table.Cell>-</Table.Cell>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <Table.Cell>-</Table.Cell>
+                      <Table.Cell>-</Table.Cell>
+                      <Table.Cell>-</Table.Cell>
+                    </>
+                  )}
+                </Table.Row>
+              )
+            })}
+          </Table.Body>
+        </Table>
+      </div>
+    </>
+  )
+}
+
+export default ContestHistory
