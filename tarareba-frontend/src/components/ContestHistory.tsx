@@ -53,7 +53,7 @@ const ContestHistory: React.FC<Props> = (props) => {
   return (
     <>
       <div style={{ marginTop: '5em' }}>
-        <Table celled={true}>
+        <Table celled={true} style={{ fontSize: 'calc(6px + 1vmin)' }}>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>日付け</Table.HeaderCell>
@@ -90,6 +90,17 @@ const ContestHistory: React.FC<Props> = (props) => {
                         style={getRatingColorStyle(record.actualNewRating)}
                       >
                         {record.actualNewRating}
+                        {record.actualNewRating > record.actualOldRating ? (
+                          <>
+                            （+{record.actualNewRating - record.actualOldRating}
+                            ）
+                          </>
+                        ) : (
+                          <>
+                            （-{record.actualOldRating - record.actualNewRating}
+                            ）
+                          </>
+                        )}
                       </Table.Cell>
                       {record.isParticipated ? (
                         <>
@@ -97,6 +108,22 @@ const ContestHistory: React.FC<Props> = (props) => {
                             style={getRatingColorStyle(record.optimalNewRating)}
                           >
                             {record.optimalNewRating}
+                            {record.optimalNewRating >
+                            record.optimalOldRating ? (
+                              <>
+                                （+
+                                {record.optimalNewRating -
+                                  record.optimalOldRating}
+                                ）
+                              </>
+                            ) : (
+                              <>
+                                （-
+                                {record.optimalOldRating -
+                                  record.optimalNewRating}
+                                ）
+                              </>
+                            )}
                           </Table.Cell>
                         </>
                       ) : (
