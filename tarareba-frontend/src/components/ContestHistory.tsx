@@ -5,7 +5,7 @@ import { useQuery } from 'react-apollo-hooks'
 
 import { Table } from 'semantic-ui-react'
 
-import getRatingColorStyle, { ratingColors } from '../utils/getRatingColorStyle'
+import getRatingColorStyle from '../utils/getRatingColorStyle'
 
 interface Contest {
   isRated: boolean
@@ -40,11 +40,19 @@ const ContestHistory: React.FC<Props> = (props) => {
   })
 
   if (loading) return <div>loading</div>
-  if (error) return <div>error</div>
-
+  if (error) {
+    return (
+      <div>
+        <p>なんらかのエラーが発生しました。</p>
+        <p>
+          <a href="https://twitter.com/monkukui2">こちら</a>にご連絡ください
+        </p>
+      </div>
+    )
+  }
   return (
     <>
-      <div style={{ margin: '5em' }}>
+      <div style={{ marginTop: '5em' }}>
         <Table celled={true}>
           <Table.Header>
             <Table.Row>
