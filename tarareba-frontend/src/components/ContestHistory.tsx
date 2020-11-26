@@ -92,12 +92,11 @@ const ContestHistory: React.FC<Props> = (props) => {
                         {record.actualNewRating}
                         {record.actualNewRating > record.actualOldRating ? (
                           <>
-                            （+{record.actualNewRating - record.actualOldRating}
-                            ）
+                            (+{record.actualNewRating - record.actualOldRating})
                           </>
                         ) : (
                           <>
-                            （-{record.actualOldRating - record.actualNewRating}
+                            (-{record.actualOldRating - record.actualNewRating})
                             ）
                           </>
                         )}
@@ -111,17 +110,17 @@ const ContestHistory: React.FC<Props> = (props) => {
                             {record.optimalNewRating >
                             record.optimalOldRating ? (
                               <>
-                                （+
+                                (+
                                 {record.optimalNewRating -
                                   record.optimalOldRating}
-                                ）
+                                )
                               </>
                             ) : (
                               <>
-                                （-
+                                (-
                                 {record.optimalOldRating -
                                   record.optimalNewRating}
-                                ）
+                                )
                               </>
                             )}
                           </Table.Cell>
