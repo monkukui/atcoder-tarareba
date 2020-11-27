@@ -24,7 +24,7 @@ func (s *TararebaService) GetOptimalHistory(ctx context.Context, message *pb.Get
 			NewRating:      rating + 100,
 			IsParticipated: (int32(i)*rating)%5 > 0,
 		})
-		rating += 31
+		rating += 100
 	}
 
 	return &pb.GetOptimalHistoryResponse{
