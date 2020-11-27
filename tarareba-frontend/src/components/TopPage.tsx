@@ -31,10 +31,11 @@ const TopPage = () => {
           で自慢しましょう（例：あのコンテストがなかったら、俺、今頃黄色コーダーなんだが？）
         </List.Item>
       </List>
-      <Form>
+      <Form style={{ marginTop: '10em' }}>
         <Form.Input
           fluid={true}
-          placeholder={'AtCoder ID'}
+          label={'AtCoder ID'}
+          placeholder={'monkukui'}
           value={inputUserID}
           onChange={(e) => setInputUserID(e.target.value)}
         />
