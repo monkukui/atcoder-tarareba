@@ -32,6 +32,7 @@ func (s *TararebaService) GetOptimalHistory(ctx context.Context, message *pb.Get
 	}, nil
 }
 
+// GetRatingTransition は、パフォーマンス列を入力として受け取り、isPerticipated が true のコンテストだけでレート推移を計算する関数です
 func (s *TararebaService) GetRatingTransition(ctx context.Context, message *pb.GetRatingTransitionRequest) (*pb.GetRatingTransitionResponse, error) {
 
 	var res []*pb.RatingTransition
