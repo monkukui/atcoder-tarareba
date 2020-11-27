@@ -5,8 +5,12 @@ option go_package = "../tarareba_algorithms_pb";
 
 service TararebaService {
 
-  // コンテスト参加履歴を返す
+  // レートが最大となる、コンテストの参加履歴を返す
   rpc GetOptimalHistory(GetOptimalHistoryRequest) returns (GetOptimalHistoryResponse) {
+  }
+
+  // ユーザーが選択したコンテストの出場履歴に対して、レートの移り変わりを返す
+  rpc GetRatingTransition(GetRatingTransitionRequest) returns (GetRatingTransitionResponse) {
   }
 }
 
@@ -15,19 +19,19 @@ message ActualHistory {
   // Required. rated かどうか
   bool is_rated = 1;
   // Required. パフォーマンス
-  int32 performance = 5;
+  int32 performance = 2;
   // Required. 内部パフォーマンス
-  int32 inner_performance = 6;
+  int32 inner_performance = 3;
 }
 
 message OptimalHistory {
 
   // Required. 参加前のレート
-  int32 old_rating = 3;
+  int32 old_rating = 1;
   // Required. 参加後のレート
-  int32 new_rating = 4;
+  int32 new_rating = 2;
   // Required. 空想上で、参加するかどうか
-  bool isParticipated = 7;
+  bool isParticipated = 3;
 }
 
 message GetOptimalHistoryRequest {
@@ -40,4 +44,34 @@ message GetOptimalHistoryResponse {
 
   // Required. 最適化後の出場コンテストのリスト
   repeated OptimalHistory optimal_history = 1;
+}
+
+message ContestPerformance {
+
+  // Required. 参加したかどうか。ユーザーが選択できる。
+  bool isParticipated = 1;
+  // Required. パフォーマンス
+  int32 performance = 2;
+  // Required. 内部パフォーマンス
+  int32 inner_performance = 3;
+}
+
+message RatingTransition {
+
+  // Required. 参加前のレート
+  int32 old_rating = 1;
+  // Required. 参加後のレート
+  int32 new_rating = 2;
+}
+
+message GetRatingTransitionRequest {
+
+  // Required. ユーザーが選択したコンテストの参加履歴のリスト
+  repeated ContestPerformance contest_performance = 1;
+}
+
+message GetRatingTransitionResponse {
+
+  // Required. レートの移り変わり
+  repeated RatingTransition rating_transition = 1;
 }
