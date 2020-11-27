@@ -3,7 +3,7 @@ import { GET_CONTEST_HISTORY } from '../graphql/tags/getContestHistory'
 
 import { useQuery } from 'react-apollo-hooks'
 
-import { Table } from 'semantic-ui-react'
+import { Table, Card, Image, Button, Checkbox } from 'semantic-ui-react'
 
 import getRatingColorStyle from '../utils/getRatingColorStyle'
 
@@ -50,9 +50,60 @@ const ContestHistory: React.FC<Props> = (props) => {
       </div>
     )
   }
+
+  if (data.contestsByUserID.length == 0) {
+    console.log(data)
+    if (props.userID != '') {
+      return (
+        <div>
+          <p>ユーザーが見つかりません</p>
+        </div>
+      )
+    }
+
+    return <></>
+  }
+
+  const currentRating =
+    data.contestsByUserID[data.contestsByUserID.length - 1].actualNewRating
+  const optimalRating =
+    data.contestsByUserID[data.contestsByUserID.length - 1].optimalNewRating
+
   return (
     <>
       <div style={{ marginTop: '5em' }}>
+        <Card>
+          <Card.Content>
+            <Card.Header>結果</Card.Header>
+          </Card.Content>
+          <Table definition style={{ width: '90%', margin: '0 auto' }}>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell>実際のレート</Table.Cell>
+                <Table.Cell style={getRatingColorStyle(currentRating)}>
+                  {currentRating}
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>架空のレート</Table.Cell>
+                <Table.Cell style={getRatingColorStyle(optimalRating)}>
+                  {optimalRating}
+                </Table.Cell>
+              </Table.Row>
+              <Table.Row>
+                <Table.Cell>差分</Table.Cell>
+                <Table.Cell style={{ fontWeight: 'bold' }}>
+                  +{optimalRating - currentRating}
+                </Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
+          <Card.Content style={{ marginTop: '2em' }}>
+            <Button basic color="green">
+              Twitter に投稿
+            </Button>
+          </Card.Content>
+        </Card>
         <Table celled={true} style={{ fontSize: 'calc(6px + 1vmin)' }}>
           <Table.Header>
             <Table.Row>
@@ -62,6 +113,7 @@ const ContestHistory: React.FC<Props> = (props) => {
               <Table.HeaderCell>パフォーマンス</Table.HeaderCell>
               <Table.HeaderCell>実際の Rating</Table.HeaderCell>
               <Table.HeaderCell>架空の Rating</Table.HeaderCell>
+              <Table.HeaderCell>参加・不参加</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
@@ -78,7 +130,19 @@ const ContestHistory: React.FC<Props> = (props) => {
                       {record.contestName}
                     </a>
                   </Table.Cell>
-                  <Table.Cell>{record.place}</Table.Cell>
+                  <Table.Cell>
+                    <a
+                      target="_blank"
+                      href={
+                        'https://' +
+                        record.contestScreenName +
+                        '/standings?watching=' +
+                        props.userID
+                      }
+                    >
+                      {record.place}
+                    </a>
+                  </Table.Cell>
                   {record.isRated ? (
                     <>
                       <Table.Cell
@@ -90,6 +154,7 @@ const ContestHistory: React.FC<Props> = (props) => {
                         style={getRatingColorStyle(record.actualNewRating)}
                       >
                         {record.actualNewRating}
+                        &nbsp;
                         {record.actualNewRating > record.actualOldRating ? (
                           <>
                             (+{record.actualNewRating - record.actualOldRating})
@@ -97,7 +162,6 @@ const ContestHistory: React.FC<Props> = (props) => {
                         ) : (
                           <>
                             (-{record.actualOldRating - record.actualNewRating})
-                            ）
                           </>
                         )}
                       </Table.Cell>
@@ -107,6 +171,7 @@ const ContestHistory: React.FC<Props> = (props) => {
                             style={getRatingColorStyle(record.optimalNewRating)}
                           >
                             {record.optimalNewRating}
+                            &nbsp;
                             {record.optimalNewRating >
                             record.optimalOldRating ? (
                               <>
@@ -128,9 +193,13 @@ const ContestHistory: React.FC<Props> = (props) => {
                       ) : (
                         <Table.Cell>-</Table.Cell>
                       )}
+                      <Table.Cell>
+                        <Checkbox />
+                      </Table.Cell>
                     </>
                   ) : (
                     <>
+                      <Table.Cell>-</Table.Cell>
                       <Table.Cell>-</Table.Cell>
                       <Table.Cell>-</Table.Cell>
                       <Table.Cell>-</Table.Cell>

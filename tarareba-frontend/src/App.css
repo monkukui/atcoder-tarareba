@@ -3,7 +3,7 @@ body {
 }
 
 .App {
-  margin: 10em;
+  margin: 5em;
   font-size: calc(10px + 1vmin);
   color: #282c34;
   min-height: 100vh;
