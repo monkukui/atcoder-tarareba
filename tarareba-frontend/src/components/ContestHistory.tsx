@@ -3,7 +3,7 @@ import { GET_CONTEST_HISTORY } from '../graphql/tags/getContestHistory'
 
 import { useQuery } from 'react-apollo-hooks'
 
-import { Table, Card, Image, Button, Checkbox } from 'semantic-ui-react'
+import { Table, Card, Button, Checkbox } from 'semantic-ui-react'
 
 import getRatingColorStyle from '../utils/getRatingColorStyle'
 
@@ -51,7 +51,7 @@ const ContestHistory: React.FC<Props> = (props) => {
     )
   }
 
-  if (data.contestsByUserID.length == 0) {
+  if (data!.contestsByUserID.length == 0) {
     console.log(data)
     if (props.userID != '') {
       return (
@@ -64,10 +64,12 @@ const ContestHistory: React.FC<Props> = (props) => {
     return <></>
   }
 
-  const currentRating =
-    data.contestsByUserID[data.contestsByUserID.length - 1].actualNewRating
-  const optimalRating =
-    data.contestsByUserID[data.contestsByUserID.length - 1].optimalNewRating
+  const currentRating = data!.contestsByUserID[
+    data!.contestsByUserID.length - 1
+  ].actualNewRating
+  const optimalRating = data!.contestsByUserID[
+    data!.contestsByUserID.length - 1
+  ].optimalNewRating
 
   return (
     <>
