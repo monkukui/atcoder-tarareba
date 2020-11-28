@@ -15,7 +15,8 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 - Appolo Client（GraphQL を React につなぐためのフレームワーク）[参考](https://www.apollographql.com/docs/react/)
 
 ## アーキテクチャ
-![S__1612452](https://user-images.githubusercontent.com/75159676/100497399-b8cd7b00-319e-11eb-84a9-4e4c8265bc60.jpg)
+![S__1612452](https://user-images.githubusercontent.com/75159676/100497467-1cf03f00-319f-11eb-973e-3d306865b4f9.jpg)
+
 
 
 `atcoder-tarareba` は、マイクロサービスアーキテクチャを採用しています。
