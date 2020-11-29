@@ -1,6 +1,6 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
-// クエリ定義
+// AtCoder ID を受け取り、コンテスト情報を返す
 export const GET_CONTEST_HISTORY = gql`
   query($userID: String!) {
     contestsByUserID(userID: $userID) {
@@ -18,5 +18,14 @@ export const GET_CONTEST_HISTORY = gql`
       optimalNewRating
       isParticipated
     }
+  }
+`
+// パフォーマンス列を受け取り、レート推移を返す
+export const GET_RATING_TRANSITION = gql`
+  query($isParticipated: [Boolean]!, $performances: [Int]!, $innerPerformance: [Int]!) {
+    ratingTransitionByPerformance(isParticipated: $isParticipated, performances: $performance, innerPerformances: $innerPerformance {
+      oldRating
+      newRating
+    }  
   }
 `
