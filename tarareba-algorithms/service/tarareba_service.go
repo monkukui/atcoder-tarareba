@@ -41,9 +41,9 @@ func (s *TararebaService) GetRatingTransition(ctx context.Context, message *pb.G
 		if message.ContestPerformance[i].IsParticipated {
 			res = append(res, &pb.RatingTransition{
 				OldRating: rating,
-				NewRating: rating + message.ContestPerformance[i].Performance,
+				NewRating: rating + message.ContestPerformance[i].Performance/100,
 			})
-			rating += message.ContestPerformance[i].Performance
+			rating += message.ContestPerformance[i].Performance / 100
 		} else {
 			res = append(res, &pb.RatingTransition{
 				OldRating: rating,

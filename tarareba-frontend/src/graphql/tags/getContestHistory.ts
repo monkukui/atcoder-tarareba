@@ -22,10 +22,18 @@ export const GET_CONTEST_HISTORY = gql`
 `
 // パフォーマンス列を受け取り、レート推移を返す
 export const GET_RATING_TRANSITION = gql`
-  query($isParticipated: [Boolean]!, $performances: [Int]!, $innerPerformance: [Int]!) {
-    ratingTransitionByPerformance(isParticipated: $isParticipated, performances: $performance, innerPerformances: $innerPerformance {
+  query(
+    $isParticipated: [Boolean]!
+    $performances: [Int]!
+    $innerPerformances: [Int]!
+  ) {
+    ratingTransitionByPerformance(
+      isParticipated: $isParticipated
+      performances: $performances
+      innerPerformances: $innerPerformances
+    ) {
       oldRating
       newRating
-    }  
+    }
   }
 `
