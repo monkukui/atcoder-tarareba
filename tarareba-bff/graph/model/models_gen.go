@@ -17,3 +17,8 @@ type Contest struct {
 	OptimalNewRating  int    `json:"optimalNewRating"`
 	IsParticipated    bool   `json:"isParticipated"`
 }
+
+type RatingTransition struct {
+	OldRating int `json:"oldRating"`
+	NewRating int `json:"newRating"`
+}

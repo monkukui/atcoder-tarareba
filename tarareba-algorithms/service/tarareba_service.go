@@ -21,10 +21,10 @@ func (s *TararebaService) GetOptimalHistory(ctx context.Context, message *pb.Get
 	for i := 0; i < len(message.ActualHistory); i++ {
 		res = append(res, &pb.OptimalHistory{
 			OldRating:      rating,
-			NewRating:      rating + 100,
+			NewRating:      rating + 31,
 			IsParticipated: (int32(i)*rating)%5 > 0,
 		})
-		rating += 100
+		rating += 31
 	}
 
 	return &pb.GetOptimalHistoryResponse{
@@ -38,11 +38,18 @@ func (s *TararebaService) GetRatingTransition(ctx context.Context, message *pb.G
 	var res []*pb.RatingTransition
 	rating := int32(0)
 	for i := 0; i < len(message.ContestPerformance); i++ {
-		res = append(res, &pb.RatingTransition{
-			OldRating: rating,
-			NewRating: rating + 100,
-		})
-		rating += 100
+		if message.ContestPerformance[i].IsParticipated {
+			res = append(res, &pb.RatingTransition{
+				OldRating: rating,
+				NewRating: rating + message.ContestPerformance[i].Performance,
+			})
+			rating += message.ContestPerformance[i].Performance
+		} else {
+			res = append(res, &pb.RatingTransition{
+				OldRating: rating,
+				NewRating: rating,
+			})
+		}
 	}
 
 	return &pb.GetRatingTransitionResponse{

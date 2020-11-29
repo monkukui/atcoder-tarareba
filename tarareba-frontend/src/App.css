@@ -4,8 +4,8 @@ body {
 
 .App {
   margin-top: 5em;
-  margin-left: 15em;
-  margin-right: 15em;
+  margin-left: 10%;
+  margin-right: 10%;
   font-size: calc(10px + 1vmin);
   color: #282c34;
   min-height: 100vh;
