@@ -39,27 +39,11 @@ const ContestHistory: React.FC<Props> = (props) => {
     },
   })
 
+  // GraphQL からデータが取得できたら、contest にデータをバインディングする
+  // 以降は、contest をフロントエンドで管理して、表示を切り替える（AtCoder にアクセスするのは最初に一回だけ）
   useEffect(() => {
     if (!loading && !error && data) {
-      let c: Contest[] = []
-      data!.contestsByUserID.map((record) => {
-        c.push({
-          isRated: record.isRated,
-          place: record.place,
-          actualOldRating: record.actualOldRating,
-          actualNewRating: record.actualNewRating,
-          performance: record.performance,
-          innerPerformance: record.innerPerformance,
-          contestScreenName: record.contestScreenName,
-          contestName: record.contestName,
-          contestNameEn: record.contestNameEn,
-          endTime: record.endTime,
-          optimalOldRating: record.optimalOldRating,
-          optimalNewRating: record.optimalNewRating,
-          isParticipated: record.isParticipated,
-        })
-      })
-      setContest(c)
+      setContest(data.contestsByUserID)
     }
   }, [data])
 
@@ -96,7 +80,6 @@ const ContestHistory: React.FC<Props> = (props) => {
 
   return (
     <>
-      <div>{contest.length}</div>
       <div style={{ marginTop: '5em' }}>
         <Card>
           <Card.Content>
@@ -222,7 +205,16 @@ const ContestHistory: React.FC<Props> = (props) => {
                         <Table.Cell>-</Table.Cell>
                       )}
                       <Table.Cell>
-                        <Checkbox />
+                        <Checkbox
+                          checked={record.isParticipated}
+                          onClick={() => {
+                            // 別関数でやる
+                            // 1. useLazyQuery で、bff サーバーにクエリを投げる
+                            // 2. 今の contest と帰ってきた情報を組み合わせて、新しい contest を作成する
+                            // 3. setContest([...]) で contest を更新
+                            setContest([])
+                          }}
+                        />
                       </Table.Cell>
                     </>
                   ) : (
