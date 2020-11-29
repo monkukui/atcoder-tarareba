@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { GET_CONTEST_HISTORY } from '../graphql/tags/getContestHistory'
 
 import { useQuery } from 'react-apollo-hooks'
@@ -32,14 +32,38 @@ type Props = {
 }
 
 const ContestHistory: React.FC<Props> = (props) => {
-  // マウント時にリクエストが走る
+  const [contest, setContest] = useState<Contest[]>([])
   const { loading, error, data } = useQuery<Contests>(GET_CONTEST_HISTORY, {
     variables: {
       userID: props.userID,
     },
   })
 
-  if (loading) return <div>loading</div>
+  useEffect(() => {
+    if (!loading && !error && data) {
+      let c: Contest[] = []
+      data!.contestsByUserID.map((record) => {
+        c.push({
+          isRated: record.isRated,
+          place: record.place,
+          actualOldRating: record.actualOldRating,
+          actualNewRating: record.actualNewRating,
+          performance: record.performance,
+          innerPerformance: record.innerPerformance,
+          contestScreenName: record.contestScreenName,
+          contestName: record.contestName,
+          contestNameEn: record.contestNameEn,
+          endTime: record.endTime,
+          optimalOldRating: record.optimalOldRating,
+          optimalNewRating: record.optimalNewRating,
+          isParticipated: record.isParticipated,
+        })
+      })
+      setContest(c)
+    }
+  }, [data])
+
+  if (loading || !contest) return <div>loading</div>
   if (error) {
     return (
       <div>
@@ -51,9 +75,8 @@ const ContestHistory: React.FC<Props> = (props) => {
     )
   }
 
-  if (data!.contestsByUserID.length == 0) {
-    console.log(data)
-    if (props.userID != '') {
+  if (data!.contestsByUserID.length === 0) {
+    if (props.userID !== '') {
       return (
         <div>
           <p>ユーザーが見つかりません</p>
@@ -73,6 +96,7 @@ const ContestHistory: React.FC<Props> = (props) => {
 
   return (
     <>
+      <div>{contest.length}</div>
       <div style={{ marginTop: '5em' }}>
         <Card>
           <Card.Content>
@@ -120,27 +144,29 @@ const ContestHistory: React.FC<Props> = (props) => {
           </Table.Header>
 
           <Table.Body>
-            {data!.contestsByUserID.map((record) => {
+            {contest!.map((record) => {
               return (
                 <Table.Row key={record.endTime}>
                   <Table.Cell>{record.endTime}</Table.Cell>
                   <Table.Cell>
                     <a
-                      target="_blank"
                       href={'https://' + record.contestScreenName}
+                      rel="noreferrer noreferrer"
+                      target="_blank"
                     >
                       {record.contestName}
                     </a>
                   </Table.Cell>
                   <Table.Cell>
                     <a
-                      target="_blank"
                       href={
                         'https://' +
                         record.contestScreenName +
                         '/standings?watching=' +
                         props.userID
                       }
+                      rel="noreferrer noreferrer"
+                      target="_blank"
                     >
                       {record.place}
                     </a>
