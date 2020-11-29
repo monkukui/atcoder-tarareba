@@ -47,6 +47,21 @@ const ContestHistory: React.FC<Props> = (props) => {
     }
   }, [data])
 
+  // index 番目の contest の参加履歴を更新する
+  // GraphQL サーバーにレート推移計算のクエリを投げる
+  // contest 全体を更新する
+  const updateContest = (index: number) => {
+    console.log(index)
+    let c: Contest[] = []
+    contest.map((record, i) => {
+      c.push(record)
+      if (i === index) {
+        c[c.length - 1].isParticipated = !c[c.length - 1].isParticipated
+      }
+    })
+    setContest(c)
+  }
+
   if (loading || !contest) return <div>loading</div>
   if (error) {
     return (
@@ -127,7 +142,7 @@ const ContestHistory: React.FC<Props> = (props) => {
           </Table.Header>
 
           <Table.Body>
-            {contest!.map((record) => {
+            {contest!.map((record, index) => {
               return (
                 <Table.Row key={record.endTime}>
                   <Table.Cell>{record.endTime}</Table.Cell>
@@ -208,12 +223,16 @@ const ContestHistory: React.FC<Props> = (props) => {
                         <Checkbox
                           checked={record.isParticipated}
                           onClick={() => {
+                            updateContest(index)
+                          }}
+                          /*onClick={() => {
                             // 別関数でやる
                             // 1. useLazyQuery で、bff サーバーにクエリを投げる
                             // 2. 今の contest と帰ってきた情報を組み合わせて、新しい contest を作成する
                             // 3. setContest([...]) で contest を更新
-                            setContest([])
-                          }}
+                            console.log(index);
+
+                          }}*/
                         />
                       </Table.Cell>
                     </>
