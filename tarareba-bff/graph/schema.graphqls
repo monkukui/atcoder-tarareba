@@ -14,6 +14,14 @@ type Contest {
   isParticipated: Boolean!
 }
 
+type RatingTransition {
+  oldRating: Int!
+  newRating: Int!
+}
+
 type Query {
   contestsByUserID(userID: String): [Contest!]!
+  ratingTransitionByPerformance(isParticipated: [Boolean]!,
+                                performances: [Int]!,
+                                innerPerformances: [Int]!): [RatingTransition]!
 }

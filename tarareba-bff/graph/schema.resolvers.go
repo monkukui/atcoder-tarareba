@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc"
 )
 
+// ContestsByUserID は、AtCoder ID を入力として受け取り、レートを最大化したコンテスト情報を返します
 func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([]*model.Contest, error) {
 	connHistory, err := grpc.Dial("127.0.0.1:19003", grpc.WithInsecure())
 	if err != nil {
@@ -38,10 +39,6 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 		})
 	}
 
-	messageAlgorithms := &pbAlgorithms.GetOptimalHistoryRequest{
-		ActualHistory: actualHistory,
-	}
-
 	connAlgorithms, err := grpc.Dial("127.0.0.1:19004", grpc.WithInsecure())
 	if err != nil {
 		return nil, err
@@ -49,6 +46,9 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 
 	clientAlgorithms := pbAlgorithms.NewTararebaServiceClient(connAlgorithms)
 
+	messageAlgorithms := &pbAlgorithms.GetOptimalHistoryRequest{
+		ActualHistory: actualHistory,
+	}
 	// マイクロサービス `tarareba_algorithms` から参加履歴を取得する
 	resAlgorithms, err := clientAlgorithms.GetOptimalHistory(context.TODO(), messageAlgorithms)
 	if err != nil {
@@ -82,6 +82,59 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 	}
 
 	return contests, nil
+}
+
+// RatingTransitionByPerformance は、パフォーマンス列を入力として受け取り、レートの推移列を返します。
+func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error) {
+
+	if len(isParticipated) != len(performances) {
+		panic("")
+	}
+	if len(isParticipated) != len(innerPerformances) {
+		panic("")
+	}
+
+	connAlgorithms, err := grpc.Dial("127.0.0.1:19004", grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+
+	clientAlgorithms := pbAlgorithms.NewTararebaServiceClient(connAlgorithms)
+
+	contestPerformance := make([]*pbAlgorithms.ContestPerformance, 0, len(isParticipated))
+
+	for i := 0; i < len(isParticipated); i++ {
+		contestPerformance = append(contestPerformance, &pbAlgorithms.ContestPerformance{
+			IsParticipated:   *isParticipated[i],
+			Performance:      int32(*performances[i]),
+			InnerPerformance: int32(*innerPerformances[i]),
+		})
+	}
+
+	messageAlgorithms := &pbAlgorithms.GetRatingTransitionRequest{
+		ContestPerformance: contestPerformance,
+	}
+
+	// マイクロサービス `tarareba_algorithms` からレート推移を取得する
+	resAlgorithms, err := clientAlgorithms.GetRatingTransition(context.TODO(), messageAlgorithms)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(isParticipated) != len(resAlgorithms.RatingTransition) {
+		panic("")
+	}
+
+	transitions := make([]*model.RatingTransition, 0, len(resAlgorithms.RatingTransition))
+
+	for _, transition := range resAlgorithms.RatingTransition {
+		transitions = append(transitions, &model.RatingTransition{
+			OldRating: int(transition.OldRating),
+			NewRating: int(transition.NewRating),
+		})
+	}
+
+	return transitions, nil
 }
 
 // Query returns generated.QueryResolver implementation.
