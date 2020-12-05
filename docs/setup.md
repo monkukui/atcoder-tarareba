@@ -77,3 +77,17 @@ query {
   }  
 }
 ```
+
+
+## step 3. フロントエンドサーバーを立ち上げる
+`yarn` が必要
+
+```
+cd tarareba-frontend
+yarn
+yarn start
+```
+
+
+`yarn` で、必要なモジュールをインストールします。
+その後、`yarn start` で、ローカルホストを立ち上げます。
