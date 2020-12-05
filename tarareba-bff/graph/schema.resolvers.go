@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/monkukui/atcoder-tarareba/tarareba-bff/graph/generated"
 	"github.com/monkukui/atcoder-tarareba/tarareba-bff/graph/model"
@@ -16,7 +17,9 @@ import (
 // ContestsByUserID は、AtCoder ID を入力として受け取り、レートを最大化したコンテスト情報を返します
 func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([]*model.Contest, error) {
 	connHistory, err := grpc.Dial("127.0.0.1:19003", grpc.WithInsecure())
+	fmt.Println("debug", 20)
 	if err != nil {
+		fmt.Println("hahihuheho")
 		return nil, err
 	}
 	defer connHistory.Close()
@@ -25,9 +28,12 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 	// マイクロサービス `tarareba_competition_history` から、コンテスト情報を取得する
 	messageHistory := &pbHistory.GetCompetitionHistoryRequest{UserId: *userID}
 	resHistory, err := clientHistory.GetCompetitionHistory(context.TODO(), messageHistory)
+	fmt.Println("debug", 31)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("debug", 36)
 
 	// マイクロサービス `tarareba_algorithms` へリクエストを送るための準備をする
 	actualHistory := make([]*pbAlgorithms.ActualHistory, 0, len(resHistory.CompetitionHistory))

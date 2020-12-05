@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -17,6 +18,8 @@ func NewTararebaService() *TararebaService {
 }
 
 func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb.GetCompetitionHistoryRequest) (*pb.GetCompetitionHistoryResponse, error) {
+
+	fmt.Println("tarareba-competition-history function is called")
 
 	// コンテスト成績表に関する JSON を取得する
 	// コンテスト成績表はここを参照：https://atcoder.jp/users/monkukui/history
