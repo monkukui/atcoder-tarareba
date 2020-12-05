@@ -50,11 +50,11 @@ AtCoder ID を引数で渡す必要があります。
 ```
 query {
   contestsByUserID(userID: "monkukui") {
-  	contestName
+    contestName
     performance
     actualOldRating
     actualNewRating
-  	optimalOldRating
+    optimalOldRating
     optimalNewRating
   }
 }
@@ -71,7 +71,7 @@ query {
 
 ```
 query {
-	ratingTransitionByPerformance(performances: [1, 2, 10], innerPerformances: [100, 200, 300], isParticipated: [false, false, false]) {
+    ratingTransitionByPerformance(performances: [1, 2, 10], innerPerformances: [100, 200, 300], isParticipated: [false, false, false]) {
     oldRating
     newRating
   }  
