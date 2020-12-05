@@ -1,7 +1,11 @@
-import React from 'react'
-import { GET_CONTEST_HISTORY } from '../graphql/tags/getContestHistory'
+import React, { useState, useEffect } from 'react'
+import {
+  GET_CONTEST_HISTORY,
+  GET_RATING_TRANSITION,
+} from '../graphql/tags/getContestHistory'
 
 import { useQuery } from 'react-apollo-hooks'
+import { useLazyQuery } from '@apollo/react-hooks'
 
 import { Table, Card, Button, Checkbox } from 'semantic-ui-react'
 
@@ -32,14 +36,73 @@ type Props = {
 }
 
 const ContestHistory: React.FC<Props> = (props) => {
-  // マウント時にリクエストが走る
+  const [contest, setContest] = useState<Contest[]>([])
   const { loading, error, data } = useQuery<Contests>(GET_CONTEST_HISTORY, {
     variables: {
       userID: props.userID,
     },
   })
+  const [getRatingTransision, { data: ratingTransision }] = useLazyQuery(
+    GET_RATING_TRANSITION,
+  )
 
-  if (loading) return <div>loading</div>
+  // GraphQL からデータが取得できたら、contest にデータをバインディングする
+  // 以降は、contest をフロントエンドで管理して、表示を切り替える（AtCoder にアクセスするのは最初に一回だけ）
+  useEffect(() => {
+    if (!loading && !error && data) {
+      setContest(data.contestsByUserID)
+    }
+  }, [data, error, data])
+
+  // GraphQL のクエリが完了して、ratingTransision が変更したきっかけで、contest を update する
+  useEffect(() => {
+    if (
+      ratingTransision &&
+      ratingTransision.ratingTransitionByPerformance.length === contest.length
+    ) {
+      let c: Contest[] = []
+      contest.map((record, i) => {
+        c.push(record)
+        c[i].optimalOldRating =
+          ratingTransision.ratingTransitionByPerformance[i].oldRating
+        c[i].optimalNewRating =
+          ratingTransision.ratingTransitionByPerformance[i].newRating
+      })
+      setContest(c)
+    }
+  }, [ratingTransision])
+
+  // index 番目の contest の参加履歴を更新する
+  // GraphQL サーバーにレート推移計算のクエリを投げる
+  // contest 全体を更新する
+  const updateContest = (index: number) => {
+    let c: Contest[] = []
+    let isParticipated: boolean[] = []
+    let performances: number[] = []
+    let innerPerformances: number[] = []
+
+    contest.map((record, i) => {
+      c.push(record)
+      if (i === index) {
+        c[c.length - 1].isParticipated = !c[c.length - 1].isParticipated
+      }
+      isParticipated.push(c[c.length - 1].isParticipated)
+      performances.push(c[c.length - 1].performance)
+      innerPerformances.push(c[c.length - 1].innerPerformance)
+    })
+    setContest(c)
+
+    // GraphQL にクエリを投げる
+    getRatingTransision({
+      variables: {
+        isParticipated: isParticipated,
+        performances: performances,
+        innerPerformances: innerPerformances,
+      },
+    })
+  }
+
+  if (loading || !contest) return <div>loading</div>
   if (error) {
     return (
       <div>
@@ -51,9 +114,8 @@ const ContestHistory: React.FC<Props> = (props) => {
     )
   }
 
-  if (data!.contestsByUserID.length == 0) {
-    console.log(data)
-    if (props.userID != '') {
+  if (data!.contestsByUserID.length === 0) {
+    if (props.userID !== '') {
       return (
         <div>
           <p>ユーザーが見つかりません</p>
@@ -120,27 +182,29 @@ const ContestHistory: React.FC<Props> = (props) => {
           </Table.Header>
 
           <Table.Body>
-            {data!.contestsByUserID.map((record) => {
+            {contest!.map((record, index) => {
               return (
                 <Table.Row key={record.endTime}>
                   <Table.Cell>{record.endTime}</Table.Cell>
                   <Table.Cell>
                     <a
-                      target="_blank"
                       href={'https://' + record.contestScreenName}
+                      rel="noreferrer noreferrer"
+                      target="_blank"
                     >
                       {record.contestName}
                     </a>
                   </Table.Cell>
                   <Table.Cell>
                     <a
-                      target="_blank"
                       href={
                         'https://' +
                         record.contestScreenName +
                         '/standings?watching=' +
                         props.userID
                       }
+                      rel="noreferrer noreferrer"
+                      target="_blank"
                     >
                       {record.place}
                     </a>
@@ -196,7 +260,15 @@ const ContestHistory: React.FC<Props> = (props) => {
                         <Table.Cell>-</Table.Cell>
                       )}
                       <Table.Cell>
-                        <Checkbox />
+                        <Checkbox
+                          checked={record.isParticipated}
+                          onClick={() => {
+                            // 1. useLazyQuery で、bff サーバーにクエリを投げる
+                            // 2. 今の contest と帰ってきた情報を組み合わせて、新しい contest を作成する
+                            // 3. setContest([...]) で contest を更新
+                            updateContest(index)
+                          }}
+                        />
                       </Table.Cell>
                     </>
                   ) : (
