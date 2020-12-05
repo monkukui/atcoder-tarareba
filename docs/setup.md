@@ -74,7 +74,7 @@ query {
     ratingTransitionByPerformance(performances: [1, 2, 10], innerPerformances: [100, 200, 300], isParticipated: [false, false, false]) {
         oldRating
         newRating
-  }  
+    }  
 }
 ```
 
