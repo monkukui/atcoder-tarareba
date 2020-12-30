@@ -13,9 +13,11 @@ import (
 	"google.golang.org/grpc"
 )
 
+// os.getenv を使う TODO
+
 // ContestsByUserID は、AtCoder ID を入力として受け取り、レートを最大化したコンテスト情報を返します
 func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([]*model.Contest, error) {
-	connHistory, err := grpc.Dial("127.0.0.1:19003", grpc.WithInsecure())
+	connHistory, err := grpc.Dial("tarareba-competition-history:19003", grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +41,7 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 		})
 	}
 
-	connAlgorithms, err := grpc.Dial("127.0.0.1:19004", grpc.WithInsecure())
+	connAlgorithms, err := grpc.Dial("tarareba-algorithms:19004", grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +96,7 @@ func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, isPar
 		panic("")
 	}
 
-	connAlgorithms, err := grpc.Dial("127.0.0.1:19004", grpc.WithInsecure())
+	connAlgorithms, err := grpc.Dial("tarareba-algorithms:19004", grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}

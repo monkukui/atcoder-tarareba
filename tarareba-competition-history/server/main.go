@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	fmt.Println("run..")
+	fmt.Println("tarareba-competition-history run..")
 
 	listenPort, err := net.Listen("tcp", ":19003")
 	if err != nil {
