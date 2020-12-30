@@ -1,45 +1,12 @@
 version: "3"
 services:
-    tarareba-competition-history:
-        container_name: tarareba-competition-history
-        build: ./tarareba-competition-history
+    app:
+        container_name: app
+        build: .
         ports:
-            - "127.0.0.1:19003:19003"
-        expose:
-            - "19003"
-        environment:
-            - STAGE=TEST
-            - PORT=19003
-    tarareba-algorithms:
-        container_name: tarareba-algorithms
-        build: ./tarareba-algorithms
-        ports:
-            - "127.0.0.1:19004:19004"
-        expose:
-            - "19004"
-        environment:
-            - STAGE=TEST
-            - PORT=19004
-    tarareba-bff:
-        container_name: tarareba-bff
-        depends_on:
-            - tarareba-competition-history
-            - tarareba-algorithms
-        build: ./tarareba-bff
-        ports:
-            - "127.0.0.1:8080:8080"
+            - "0.0.0.0:8080:8080"
         environment:
             - STAGE=TEST
             - PORT=8080
-    tarareba-frontend:
-        container_name: tarareba-frontend
-        depends_on:
-            - tarareba-competition-history
-            - tarareba-algorithms
-            - tarareba-bff
-        build: ./tarareba-frontend
-        ports:
-            - "127.0.0.1:5000:5000"
-        environment:
-            - STAGE=TEST
-            - PORT=5000
+        entrypoint: 
+            - ./main
