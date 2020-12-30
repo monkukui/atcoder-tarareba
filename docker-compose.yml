@@ -27,7 +27,19 @@ services:
             - tarareba-algorithms
         build: ./tarareba-bff
         ports:
-            - "8080:8080"
+            - "127.0.0.1:8080:8080"
         environment:
             - STAGE=TEST
             - PORT=8080
+    tarareba-frontend:
+        container_name: tarareba-frontend
+        depends_on:
+            - tarareba-competition-history
+            - tarareba-algorithms
+            - tarareba-bff
+        build: ./tarareba-frontend
+        ports:
+            - "127.0.0.1:5000:5000"
+        environment:
+            - STAGE=TEST
+            - PORT=5000

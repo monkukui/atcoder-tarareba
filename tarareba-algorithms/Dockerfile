@@ -14,4 +14,6 @@ COPY ./proto ./proto
 
 RUN CGO_ENABLED=0 go build -o main ./server/main.go
 
+EXPOSE 19004
+
 CMD ./main

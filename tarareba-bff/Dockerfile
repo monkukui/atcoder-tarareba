@@ -14,4 +14,6 @@ COPY ./graph ./graph
 
 RUN CGO_ENABLED=0 go build -o server ./server.go
 
+EXPOSE 8080
+
 CMD ./server
