@@ -4,9 +4,9 @@ services:
         container_name: app
         build: .
         ports:
-            - "0.0.0.0:8080:8080"
+            - "0.0.0.0:1213:1213"
         environment:
             - STAGE=TEST
-            - PORT=8080
+            - PORT=1213
         entrypoint: 
             - ./main

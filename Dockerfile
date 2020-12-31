@@ -39,7 +39,4 @@ COPY --from=build-go /app/main ./main
 
 EXPOSE 1213
 
-CMD ./tarareba-algorithms
-CMD ./tarareba-competition-history
-CMD ./tarareba-bff
-# CMD ./main
+CMD ./tarareba-algorithms & ./tarareba-competition-history & ./tarareba-bff & ./main
