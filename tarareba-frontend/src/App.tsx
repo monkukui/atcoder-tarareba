@@ -9,6 +9,7 @@ import { appClient } from './graphql/client'
 import TopPage from './components/TopPage'
 import HowToUse from './components/HowToUse'
 import Contact from './components/Contact'
+import Ranking from './components/Ranking'
 
 import {
   Button,
@@ -124,6 +125,15 @@ const App = () => {
                     </Menu.Item>
                     <Menu.Item
                       as="a"
+                      active={page === 'ranking'}
+                      onClick={() => {
+                        setPage('ranking')
+                      }}
+                    >
+                      Ranking
+                    </Menu.Item>
+                    <Menu.Item
+                      as="a"
                       active={page === 'contact'}
                       onClick={() => {
                         setPage('contact')
@@ -151,6 +161,7 @@ const App = () => {
               {page === 'top' ? <TopPage /> : null}
               {page === 'howtouse' ? <HowToUse /> : null}
               {page === 'contact' ? <Contact /> : null}
+              {page === 'ranking' ? <Ranking /> : null}
             </Container>
             <Segment
               inverted={true}
