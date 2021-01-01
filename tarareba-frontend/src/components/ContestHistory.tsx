@@ -52,7 +52,7 @@ const ContestHistory: React.FC<Props> = (props) => {
     if (!loading && !error && data) {
       setContest(data.contestsByUserID)
     }
-  }, [data, error, data])
+  }, [loading, error, data])
 
   // GraphQL のクエリが完了して、ratingTransision が変更したきっかけで、contest を update する
   useEffect(() => {
@@ -61,7 +61,7 @@ const ContestHistory: React.FC<Props> = (props) => {
       ratingTransision.ratingTransitionByPerformance.length === contest.length
     ) {
       let c: Contest[] = []
-      contest.map((record, i) => {
+      contest.forEach((record, i) => {
         c.push(record)
         c[i].optimalOldRating =
           ratingTransision.ratingTransitionByPerformance[i].oldRating
@@ -70,7 +70,7 @@ const ContestHistory: React.FC<Props> = (props) => {
       })
       setContest(c)
     }
-  }, [ratingTransision])
+  }, [contest, ratingTransision])
 
   // index 番目の contest の参加履歴を更新する
   // GraphQL サーバーにレート推移計算のクエリを投げる
@@ -81,7 +81,7 @@ const ContestHistory: React.FC<Props> = (props) => {
     let performances: number[] = []
     let innerPerformances: number[] = []
 
-    contest.map((record, i) => {
+    contest.forEach((record, i) => {
       c.push(record)
       if (i === index) {
         c[c.length - 1].isParticipated = !c[c.length - 1].isParticipated
