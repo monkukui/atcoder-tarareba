@@ -7,6 +7,9 @@ import { ApolloProvider as ApolloHooksProvider } from 'react-apollo-hooks'
 import { appClient } from './graphql/client'
 
 import TopPage from './components/TopPage'
+import HowToUse from './components/HowToUse'
+import Contact from './components/Contact'
+
 import {
   Button,
   Container,
@@ -37,7 +40,7 @@ const HomepageHeading = () => (
         marginTop: '1.5em',
       }}
     >
-      「このコンテストがなかっ
+      「このコンテストが存在しなかっ
       <span style={{ color: 'rgb(235, 50, 35)', fontWeight: 'bold' }}>
         たら
       </span>
@@ -67,6 +70,7 @@ const HomepageHeading = () => (
 
 const App = () => {
   const [fixed, setFixed] = useState(false)
+  const [page, setPage] = useState('top')
   const showFixedMenu = () => {
     setFixed(true)
   }
@@ -86,7 +90,10 @@ const App = () => {
               <Segment
                 textAlign="center"
                 inverted
-                style={{ minHeight: 570, padding: '1em 0em' }}
+                style={{
+                  minHeight: page === 'top' ? 550 : 40,
+                  padding: '1em 0em',
+                }}
                 vertical
               >
                 <Menu
@@ -97,27 +104,63 @@ const App = () => {
                   size="large"
                 >
                   <Container>
-                    <Menu.Item as="a" active>
+                    <Menu.Item
+                      as="a"
+                      active={page === 'top'}
+                      onClick={() => {
+                        setPage('top')
+                      }}
+                    >
                       Top
                     </Menu.Item>
-                    <Menu.Item as="a">How to use</Menu.Item>
-                    <Menu.Item as="a">Contact</Menu.Item>
+                    <Menu.Item
+                      as="a"
+                      active={page === 'howtouse'}
+                      onClick={() => {
+                        setPage('howtouse')
+                      }}
+                    >
+                      How to use
+                    </Menu.Item>
+                    <Menu.Item
+                      as="a"
+                      active={page === 'contact'}
+                      onClick={() => {
+                        setPage('contact')
+                      }}
+                    >
+                      Contact
+                    </Menu.Item>
                     <Menu.Item position="right">
                       <Button
                         as="a"
                         inverted={!fixed}
                         primary={fixed}
                         style={{ marginLeft: '0.5em' }}
+                        href="https://github.com/monkukui/atcoder-tarareba"
                       >
                         GitHub
                       </Button>
                     </Menu.Item>
                   </Container>
                 </Menu>
-                <HomepageHeading />
+                {page === 'top' ? <HomepageHeading /> : null}
               </Segment>
             </Visibility>
-            <TopPage />
+            <Container style={{ padding: '1.0em' }}>
+              {page === 'top' ? <TopPage /> : null}
+              {page === 'howtouse' ? <HowToUse /> : null}
+              {page === 'contact' ? <Contact /> : null}
+            </Container>
+            <Segment
+              inverted={true}
+              vertical={true}
+              style={{ padding: '1em 0em', marginTop: '3em' }}
+            >
+              <Container textAlign="center">
+                <p>AtCoder tarareba 2020</p>
+              </Container>
+            </Segment>
           </ApolloHooksProvider>
         </ApolloProvider>
       </header>
