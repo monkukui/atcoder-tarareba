@@ -9,4 +9,4 @@ services:
             - STAGE=TEST
             - PORT=1213
         entrypoint: 
-            - ./main
+            - ./start.sh
