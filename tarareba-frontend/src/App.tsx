@@ -56,16 +56,6 @@ const HomepageHeading = () => (
       AtCoder tarareba は、過去を改竄してレートを最大化するサービスです
       <br />
     </Header.Subheader>
-    <Header
-      as="h2"
-      content=""
-      inverted
-      style={{
-        fontSize: '1.7em',
-        fontWeight: 'normal',
-        marginTop: '1.5em',
-      }}
-    />
   </Container>
 )
 
@@ -93,7 +83,7 @@ const App = () => {
                 inverted
                 style={{
                   minHeight: page === 'top' ? 550 : 40,
-                  padding: '1em 0em',
+                  padding: '0.2em 0em',
                 }}
                 vertical
               >
@@ -157,7 +147,7 @@ const App = () => {
                 {page === 'top' ? <HomepageHeading /> : null}
               </Segment>
             </Visibility>
-            <Container style={{ padding: '1.0em' }}>
+            <Container>
               {page === 'top' ? <TopPage /> : null}
               {page === 'howtouse' ? <HowToUse /> : null}
               {page === 'contact' ? <Contact /> : null}
@@ -166,7 +156,7 @@ const App = () => {
             <Segment
               inverted={true}
               vertical={true}
-              style={{ padding: '1em 0em', marginTop: '3em' }}
+              style={{ padding: '1em 0em', marginTop: '10em' }}
             >
               <Container textAlign="center">
                 <p>AtCoder tarareba 2020</p>

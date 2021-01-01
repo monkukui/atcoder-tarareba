@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   GET_CONTEST_HISTORY,
   GET_RATING_TRANSITION,
@@ -7,7 +7,7 @@ import {
 import { useQuery } from 'react-apollo-hooks'
 import { useLazyQuery } from '@apollo/react-hooks'
 
-import { Table, Card, Button, Checkbox } from 'semantic-ui-react'
+import { Table, Card, Button, Checkbox, Icon } from 'semantic-ui-react'
 
 import getRatingColorStyle from '../utils/getRatingColorStyle'
 
@@ -46,11 +46,17 @@ const ContestHistory: React.FC<Props> = (props) => {
     GET_RATING_TRANSITION,
   )
 
+  const ref = useRef<null | HTMLDivElement>(null)
+
   // GraphQL からデータが取得できたら、contest にデータをバインディングする
   // 以降は、contest をフロントエンドで管理して、表示を切り替える（AtCoder にアクセスするのは最初に一回だけ）
   useEffect(() => {
     if (!loading && !error && data) {
       setContest(data.contestsByUserID)
+      // TODO: 変更
+      if (ref != null && ref.current != null) {
+        ref!.current!.scrollIntoView({ block: 'end', behavior: 'smooth' })
+      }
     }
   }, [loading, error, data])
 
@@ -135,13 +141,22 @@ const ContestHistory: React.FC<Props> = (props) => {
 
   return (
     <>
-      <div style={{ marginTop: '5em' }}>
-        <Card>
-          <Card.Content>
-            <Card.Header>結果</Card.Header>
-          </Card.Content>
-          <Table definition style={{ width: '90%', margin: '0 auto' }}>
+      <div style={{ marginTop: '3em', fontSize: 'calc(6px + 1vmin)' }}>
+        <Card
+          style={{
+            margin: '0 auto',
+            marginBottom: '5em',
+            width: '40em',
+            outlineColor: 'rgb(67, 121, 178)',
+          }}
+        >
+          <Card.Content header="結果" />
+          <Table basic="very" style={{ width: '90%', margin: '0 auto' }}>
             <Table.Body>
+              <Table.Row>
+                <Table.Cell>ユーザー名</Table.Cell>
+                <Table.Cell>{props.userID}</Table.Cell>
+              </Table.Row>
               <Table.Row>
                 <Table.Cell>実際のレート</Table.Cell>
                 <Table.Cell style={getRatingColorStyle(currentRating)}>
@@ -157,14 +172,19 @@ const ContestHistory: React.FC<Props> = (props) => {
               <Table.Row>
                 <Table.Cell>差分</Table.Cell>
                 <Table.Cell style={{ fontWeight: 'bold' }}>
-                  +{optimalRating - currentRating}
+                  {optimalRating > currentRating ? (
+                    <>+{optimalRating - currentRating}</>
+                  ) : (
+                    <>-{currentRating - optimalRating}</>
+                  )}
                 </Table.Cell>
               </Table.Row>
             </Table.Body>
           </Table>
           <Card.Content style={{ marginTop: '2em' }}>
-            <Button basic color="green">
-              Twitter に投稿
+            <Button basic>
+              <Icon name="twitter" style={{ color: 'rgb(74, 161, 235)' }} />
+              で投稿する
             </Button>
           </Card.Content>
         </Card>
@@ -180,6 +200,7 @@ const ContestHistory: React.FC<Props> = (props) => {
               <Table.HeaderCell>参加・不参加</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
+          <div ref={ref}></div>
 
           <Table.Body>
             {contest!.map((record, index) => {
@@ -284,6 +305,17 @@ const ContestHistory: React.FC<Props> = (props) => {
             })}
           </Table.Body>
         </Table>
+
+        <Button
+          color="instagram"
+          onClick={() => {
+            if (ref != null && ref.current != null) {
+              ref!.current!.scrollIntoView({ block: 'end', behavior: 'smooth' })
+            }
+          }}
+        >
+          トップヘ
+        </Button>
       </div>
     </>
   )
