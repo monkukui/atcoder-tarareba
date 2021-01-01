@@ -147,7 +147,7 @@ const App = () => {
                 {page === 'top' ? <HomepageHeading /> : null}
               </Segment>
             </Visibility>
-            <Container>
+            <Container style={{ width: '70%' }}>
               {page === 'top' ? <TopPage /> : null}
               {page === 'howtouse' ? <HowToUse /> : null}
               {page === 'contact' ? <Contact /> : null}

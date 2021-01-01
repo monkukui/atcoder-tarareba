@@ -146,7 +146,7 @@ const ContestHistory: React.FC<Props> = (props) => {
           style={{
             margin: '0 auto',
             marginBottom: '5em',
-            width: '40em',
+            width: '70%',
             outlineColor: 'rgb(67, 121, 178)',
           }}
         >
@@ -205,7 +205,11 @@ const ContestHistory: React.FC<Props> = (props) => {
           <Table.Body>
             {contest!.map((record, index) => {
               return (
-                <Table.Row key={record.endTime}>
+                <Table.Row
+                  key={record.endTime}
+                  positive={record.isParticipated && record.isRated}
+                  negative={!(record.isParticipated && record.isRated)}
+                >
                   <Table.Cell>{record.endTime}</Table.Cell>
                   <Table.Cell>
                     <a
