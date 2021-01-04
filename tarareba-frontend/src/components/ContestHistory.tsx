@@ -53,7 +53,6 @@ const ContestHistory: React.FC<Props> = (props) => {
   useEffect(() => {
     if (!loading && !error && data) {
       setContest(data.contestsByUserID)
-      // TODO: 変更
       if (ref != null && ref.current != null) {
         ref!.current!.scrollIntoView({ block: 'end', behavior: 'smooth' })
       }
@@ -284,26 +283,25 @@ const ContestHistory: React.FC<Props> = (props) => {
                       ) : (
                         <Table.Cell>-</Table.Cell>
                       )}
-                      <Table.Cell>
-                        <Checkbox
-                          checked={record.isParticipated}
-                          onClick={() => {
-                            // 1. useLazyQuery で、bff サーバーにクエリを投げる
-                            // 2. 今の contest と帰ってきた情報を組み合わせて、新しい contest を作成する
-                            // 3. setContest([...]) で contest を更新
-                            updateContest(index)
-                          }}
-                        />
-                      </Table.Cell>
                     </>
                   ) : (
                     <>
                       <Table.Cell>-</Table.Cell>
                       <Table.Cell>-</Table.Cell>
                       <Table.Cell>-</Table.Cell>
-                      <Table.Cell>-</Table.Cell>
                     </>
                   )}
+                  <Table.Cell>
+                    <Checkbox
+                      checked={record.isParticipated}
+                      onClick={() => {
+                        // 1. useLazyQuery で、bff サーバーにクエリを投げる
+                        // 2. 今の contest と帰ってきた情報を組み合わせて、新しい contest を作成する
+                        // 3. setContest([...]) で contest を更新
+                        updateContest(index)
+                      }}
+                    />
+                  </Table.Cell>
                 </Table.Row>
               )
             })}
