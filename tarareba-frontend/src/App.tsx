@@ -24,7 +24,6 @@ const HomepageHeading = () => (
   <Container text>
     <Header
       as="h1"
-      content="AtCoder tarareba"
       inverted
       style={{
         fontSize: '3.5em',
@@ -32,7 +31,11 @@ const HomepageHeading = () => (
         marginBottom: 0,
         marginTop: '2em',
       }}
-    />
+    >
+      At
+      <span style={{ color: 'rgb(229, 115, 110)' }}>C</span>
+      oder tarareba
+    </Header>
     <Header.Subheader
       as="h2"
       style={{
@@ -42,13 +45,13 @@ const HomepageHeading = () => (
       }}
     >
       「このコンテストが存在しなかっ
-      <span style={{ color: 'rgb(235, 50, 35)', fontWeight: 'bold' }}>
+      <span style={{ color: 'rgb(229, 115, 110)', fontWeight: 'bold' }}>
         たら
       </span>
       」
       <br />
       「あのコンテストに参加していなけ
-      <span style={{ color: 'rgb(235, 50, 35)', fontWeight: 'bold' }}>
+      <span style={{ color: 'rgb(229, 115, 110)', fontWeight: 'bold' }}>
         れば
       </span>
       」
