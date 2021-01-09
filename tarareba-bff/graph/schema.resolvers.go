@@ -13,9 +13,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-// os.getenv を使う TODO
-
-// ContestsByUserID は、AtCoder ID を入力として受け取り、レートを最大化したコンテスト情報を返します
 func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([]*model.Contest, error) {
 	connHistory, err := grpc.Dial("127.0.0.1:19003", grpc.WithInsecure())
 	// connHistory, err := grpc.Dial("tarareba-competition-history:19003", grpc.WithInsecure())
@@ -88,9 +85,7 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 	return contests, nil
 }
 
-// RatingTransitionByPerformance は、パフォーマンス列を入力として受け取り、レートの推移列を返します。
 func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error) {
-
 	if len(isParticipated) != len(performances) {
 		panic("")
 	}

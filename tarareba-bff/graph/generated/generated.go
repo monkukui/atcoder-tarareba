@@ -51,11 +51,11 @@ type ComplexityRoot struct {
 		EndTime           func(childComplexity int) int
 		InnerPerformance  func(childComplexity int) int
 		IsParticipated    func(childComplexity int) int
-		IsRated           func(childComplexity int) int
 		OptimalNewRating  func(childComplexity int) int
 		OptimalOldRating  func(childComplexity int) int
 		Performance       func(childComplexity int) int
 		Place             func(childComplexity int) int
+		RateChange        func(childComplexity int) int
 	}
 
 	Query struct {
@@ -145,13 +145,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Contest.IsParticipated(childComplexity), true
 
-	case "Contest.isRated":
-		if e.complexity.Contest.IsRated == nil {
-			break
-		}
-
-		return e.complexity.Contest.IsRated(childComplexity), true
-
 	case "Contest.optimalNewRating":
 		if e.complexity.Contest.OptimalNewRating == nil {
 			break
@@ -179,6 +172,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Contest.Place(childComplexity), true
+
+	case "Contest.rateChange":
+		if e.complexity.Contest.RateChange == nil {
+			break
+		}
+
+		return e.complexity.Contest.RateChange(childComplexity), true
 
 	case "Query.contestsByUserID":
 		if e.complexity.Query.ContestsByUserID == nil {
@@ -269,7 +269,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "graph/schema.graphqls", Input: `type Contest {
-  isRated: Boolean!
+  rateChange: String!
   place: Int!
   actualOldRating: Int!
   actualNewRating: Int!
@@ -404,7 +404,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Contest_isRated(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contest_rateChange(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -422,7 +422,7 @@ func (ec *executionContext) _Contest_isRated(ctx context.Context, field graphql.
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.IsRated, nil
+		return obj.RateChange, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -434,9 +434,9 @@ func (ec *executionContext) _Contest_isRated(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Contest_place(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
@@ -2190,8 +2190,8 @@ func (ec *executionContext) _Contest(ctx context.Context, sel ast.SelectionSet, 
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Contest")
-		case "isRated":
-			out.Values[i] = ec._Contest_isRated(ctx, field, obj)
+		case "rateChange":
+			out.Values[i] = ec._Contest_rateChange(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

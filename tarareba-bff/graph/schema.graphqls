@@ -1,5 +1,5 @@
 type Contest {
-  isRated: Boolean!
+  rateChange: String!
   place: Int!
   actualOldRating: Int!
   actualNewRating: Int!
