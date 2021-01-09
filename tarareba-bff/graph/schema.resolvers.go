@@ -85,7 +85,7 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 	return contests, nil
 }
 
-func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, rateChange []*string, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error) {
+func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, rateChanges []*string, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error) {
 	if len(isParticipated) != len(performances) {
 		panic("")
 	}
@@ -105,7 +105,7 @@ func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, rateC
 
 	for i := 0; i < len(isParticipated); i++ {
 		contestPerformance = append(contestPerformance, &pbAlgorithms.ContestPerformance{
-			RateChange:       *rateChange[i],
+			RateChange:       *rateChanges[i],
 			IsParticipated:   *isParticipated[i],
 			Performance:      int32(*performances[i]),
 			InnerPerformance: int32(*innerPerformances[i]),

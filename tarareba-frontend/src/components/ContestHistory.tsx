@@ -12,7 +12,7 @@ import { Table, Card, Button, Checkbox, Icon } from 'semantic-ui-react'
 import getRatingColorStyle from '../utils/getRatingColorStyle'
 
 interface Contest {
-  isRated: boolean
+  rateChange: string
   place: number
   actualOldRating: number
   actualNewRating: number
@@ -82,6 +82,7 @@ const ContestHistory: React.FC<Props> = (props) => {
   // contest 全体を更新する
   const updateContest = (index: number) => {
     let c: Contest[] = []
+    let rateChanges: string[] = []
     let isParticipated: boolean[] = []
     let performances: number[] = []
     let innerPerformances: number[] = []
@@ -91,6 +92,7 @@ const ContestHistory: React.FC<Props> = (props) => {
       if (i === index) {
         c[c.length - 1].isParticipated = !c[c.length - 1].isParticipated
       }
+      rateChanges.push(c[c.length - 1].rateChange)
       isParticipated.push(c[c.length - 1].isParticipated)
       performances.push(c[c.length - 1].performance)
       innerPerformances.push(c[c.length - 1].innerPerformance)
@@ -100,6 +102,7 @@ const ContestHistory: React.FC<Props> = (props) => {
     // GraphQL にクエリを投げる
     getRatingTransision({
       variables: {
+        rateChanges: rateChanges,
         isParticipated: isParticipated,
         performances: performances,
         innerPerformances: innerPerformances,
@@ -206,8 +209,10 @@ const ContestHistory: React.FC<Props> = (props) => {
               return (
                 <Table.Row
                   key={record.endTime}
-                  positive={record.isParticipated && record.isRated}
-                  negative={!(record.isParticipated && record.isRated)}
+                  positive={record.isParticipated && record.rateChange !== '-'}
+                  negative={
+                    !(record.isParticipated && record.rateChange !== '-')
+                  }
                 >
                   <Table.Cell>{record.endTime}</Table.Cell>
                   <Table.Cell>
@@ -233,7 +238,7 @@ const ContestHistory: React.FC<Props> = (props) => {
                       {record.place}
                     </a>
                   </Table.Cell>
-                  {record.isRated ? (
+                  {record.rateChange !== '-' ? (
                     <>
                       <Table.Cell
                         style={getRatingColorStyle(record.performance)}

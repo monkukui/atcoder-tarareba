@@ -60,7 +60,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		ContestsByUserID              func(childComplexity int, userID *string) int
-		RatingTransitionByPerformance func(childComplexity int, rateChange []*string, isParticipated []*bool, performances []*int, innerPerformances []*int) int
+		RatingTransitionByPerformance func(childComplexity int, rateChanges []*string, isParticipated []*bool, performances []*int, innerPerformances []*int) int
 	}
 
 	RatingTransition struct {
@@ -71,7 +71,7 @@ type ComplexityRoot struct {
 
 type QueryResolver interface {
 	ContestsByUserID(ctx context.Context, userID *string) ([]*model.Contest, error)
-	RatingTransitionByPerformance(ctx context.Context, rateChange []*string, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error)
+	RatingTransitionByPerformance(ctx context.Context, rateChanges []*string, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error)
 }
 
 type executableSchema struct {
@@ -202,7 +202,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.RatingTransitionByPerformance(childComplexity, args["rateChange"].([]*string), args["isParticipated"].([]*bool), args["performances"].([]*int), args["innerPerformances"].([]*int)), true
+		return e.complexity.Query.RatingTransitionByPerformance(childComplexity, args["rateChanges"].([]*string), args["isParticipated"].([]*bool), args["performances"].([]*int), args["innerPerformances"].([]*int)), true
 
 	case "RatingTransition.newRating":
 		if e.complexity.RatingTransition.NewRating == nil {
@@ -292,7 +292,7 @@ type RatingTransition {
 type Query {
   contestsByUserID(userID: String): [Contest!]!
   ratingTransitionByPerformance(
-    rateChange: [String]!,
+    rateChanges: [String]!,
     isParticipated: [Boolean]!,
     performances: [Int]!,
     innerPerformances: [Int]!
@@ -340,14 +340,14 @@ func (ec *executionContext) field_Query_ratingTransitionByPerformance_args(ctx c
 	var err error
 	args := map[string]interface{}{}
 	var arg0 []*string
-	if tmp, ok := rawArgs["rateChange"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rateChange"))
+	if tmp, ok := rawArgs["rateChanges"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rateChanges"))
 		arg0, err = ec.unmarshalNString2ᚕᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["rateChange"] = arg0
+	args["rateChanges"] = arg0
 	var arg1 []*bool
 	if tmp, ok := rawArgs["isParticipated"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isParticipated"))
@@ -938,7 +938,7 @@ func (ec *executionContext) _Query_ratingTransitionByPerformance(ctx context.Con
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RatingTransitionByPerformance(rctx, args["rateChange"].([]*string), args["isParticipated"].([]*bool), args["performances"].([]*int), args["innerPerformances"].([]*int))
+		return ec.resolvers.Query().RatingTransitionByPerformance(rctx, args["rateChanges"].([]*string), args["isParticipated"].([]*bool), args["performances"].([]*int), args["innerPerformances"].([]*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
