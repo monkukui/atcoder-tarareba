@@ -33,9 +33,9 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 	actualHistory := make([]*pbAlgorithms.ActualHistory, 0, len(resHistory.CompetitionHistory))
 	for _, contest := range resHistory.CompetitionHistory {
 		actualHistory = append(actualHistory, &pbAlgorithms.ActualHistory{
-			IsRated:          contest.IsRated,
-			Performance:      contest.Performance,
-			InnerPerformance: contest.InnerPerformance,
+			RateChange:       contest.GetRateChange(),
+			Performance:      contest.GetPerformance(),
+			InnerPerformance: contest.GetInnerPerformance(),
 		})
 	}
 
@@ -66,19 +66,19 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 		optimal := resAlgorithms.OptimalHistory[i]
 
 		contests = append(contests, &model.Contest{
-			IsRated:           contest.IsRated,
-			Place:             int(contest.Place),
-			ActualOldRating:   int(contest.OldRating),
-			ActualNewRating:   int(contest.NewRating),
-			Performance:       int(contest.Performance),
-			InnerPerformance:  int(contest.InnerPerformance),
-			ContestScreenName: contest.ContestScreenName,
-			ContestName:       contest.ContestName,
-			ContestNameEn:     contest.ContestNameEn,
-			EndTime:           contest.EndTime,
-			OptimalOldRating:  int(optimal.OldRating),
-			OptimalNewRating:  int(optimal.NewRating),
-			IsParticipated:    optimal.IsParticipated,
+			RateChange:        contest.GetRateChange(),
+			Place:             int(contest.GetPlace()),
+			ActualOldRating:   int(contest.GetOldRating()),
+			ActualNewRating:   int(contest.GetNewRating()),
+			Performance:       int(contest.GetPerformance()),
+			InnerPerformance:  int(contest.GetInnerPerformance()),
+			ContestScreenName: contest.GetContestScreenName(),
+			ContestName:       contest.GetContestName(),
+			ContestNameEn:     contest.GetContestNameEn(),
+			EndTime:           contest.GetEndTime(),
+			OptimalOldRating:  int(optimal.GetOldRating()),
+			OptimalNewRating:  int(optimal.GetNewRating()),
+			IsParticipated:    optimal.GetIsParticipated(),
 		})
 	}
 
@@ -105,6 +105,7 @@ func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, rateC
 
 	for i := 0; i < len(isParticipated); i++ {
 		contestPerformance = append(contestPerformance, &pbAlgorithms.ContestPerformance{
+			RateChange:       *rateChange[i],
 			IsParticipated:   *isParticipated[i],
 			Performance:      int32(*performances[i]),
 			InnerPerformance: int32(*innerPerformances[i]),
@@ -129,8 +130,8 @@ func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, rateC
 
 	for _, transition := range resAlgorithms.RatingTransition {
 		transitions = append(transitions, &model.RatingTransition{
-			OldRating: int(transition.OldRating),
-			NewRating: int(transition.NewRating),
+			OldRating: int(transition.GetOldRating()),
+			NewRating: int(transition.GetNewRating()),
 		})
 	}
 

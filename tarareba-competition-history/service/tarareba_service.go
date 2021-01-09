@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -50,8 +51,9 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 	history := make([]*pb.CompetitionHistory, 0, len(userContests))
 
 	for _, uc := range userContests {
+		contestID := getContestIDFromContestScreenName(uc.ContestScreenName)
 		history = append(history, &pb.CompetitionHistory{
-			RateChange:        rateChanges[uc.ContestName],
+			RateChange:        rateChanges[contestID],
 			Place:             uc.Place,
 			OldRating:         uc.OldRating,
 			NewRating:         uc.NewRating,
@@ -98,23 +100,20 @@ func getRateChanges(userContests UserContests) (map[string]string, error) {
 	// コンテスト不備などで、レート範囲外の時、" ~ "
 	// 令和 ABC など、" ~ 1999"
 	// 令和 AGC など、"2000 ~ "
-	var contestNameToRateChanges map[string]string
-	// contestNameToContestIDs は、コンテスト名を key として、コンテスト ID を value とする map です
-	// コンテスト ID は、例えば "abc005" などです。
-	// コンテストの順位表を取得するのに使用します
-	var contestNameToContestIDs map[string]string
+	contestIDToRateChanges := make(map[string]string)
 
 	for _, c := range contests {
-		contestNameToRateChanges[c.Title] = c.RateChange
-		contestNameToContestIDs[c.Title] = c.ID
+		contestIDToRateChanges[c.ID] = c.RateChange
 	}
 
 	// コンテストごとに AtCoder の API を叩いて、すべての performance が 0 かどうかを確認することで、コンテスト自体が unrated だったかどうかを判断する
 	// コンテストごとに成績表はこの URL を参照：https://atcoder.jp/contests/arc109/results/json
 	// 非常に、N+1 みがある
 	for _, uc := range userContests {
-		contestURL := "https://atcoder.jp/contests/" + contestNameToContestIDs[uc.ContestName] + "/results/json"
-
+		contestID := getContestIDFromContestScreenName(uc.ContestScreenName)
+		contestURL := "https://atcoder.jp/contests/" + contestID + "/results/json"
+		fmt.Println(uc.ContestName)
+		fmt.Println(contestURL)
 		resp, err := http.Get(contestURL)
 		if err != nil {
 			// え、返しちゃう？
@@ -135,18 +134,29 @@ func getRateChanges(userContests UserContests) (map[string]string, error) {
 		// 得られた結果の Performance に正の値があれば、ok
 		isRated := false
 		for _, res := range contestResults {
-			if res.Performance == "0" { // performance が 0 以上の値であることを仮定している（大丈夫だよね）
+			if res.Performance > 0 {
 				isRated = true
 				break
 			}
 		}
 
 		if !isRated {
-			contestNameToRateChanges[uc.ContestName] = " ~ "
+			contestIDToRateChanges[contestID] = "-"
 		}
 	}
 
-	return contestNameToRateChanges, nil
+	return contestIDToRateChanges, nil
+}
+
+func getContestIDFromContestScreenName(contestScreenName string) string {
+	contestID := ""
+	for _, c := range contestScreenName {
+		if c == '.' {
+			break
+		}
+		contestID += string(c)
+	}
+	return contestID
 }
 
 type (
@@ -166,15 +176,14 @@ type (
 	UserContests []*UserContest
 
 	Contest struct {
-		ID         string `json:"id"`    // e.g. 'abc057'
-		Title      string `json:"title"` // e.g 'ABC057'
+		ID         string `json:"id"` // e.g. 'abc057'
 		RateChange string `json:"rate_change"`
 	}
 
 	Contests []*Contest
 
 	ContestResult struct {
-		Performance string `json:"Performance"`
+		Performance int `json:"Performance"`
 	}
 
 	ContestResults []*ContestResult
