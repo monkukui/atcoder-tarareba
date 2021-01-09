@@ -73,9 +73,9 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 // 現状、atcoder と kenkoooo さんの API を叩きますが、自前の DB を用意したほうがいいと思います。
 func getRateChanges(userContests UserContests) (map[string]string, error) {
 
-	// kenkooo さんの API を一回叩きます。
+	// kenkoooo さんの API を一回叩きます。
 	// この URL を参照：https://kenkoooo.com/atcoder/resources/contests.json
-    kenkooooURL := "https://kenkoooo.com/atcoder/resources/contests.json"
+	kenkooooURL := "https://kenkoooo.com/atcoder/resources/contests.json"
 
 	resp, err := http.Get(kenkooooURL)
 	if err != nil {
@@ -166,8 +166,8 @@ type (
 	UserContests []*UserContest
 
 	Contest struct {
-		ID string `json:"id"` // e.g. 'abc057'
-		Title string `json:"title"` // e.g 'ABC057'
+		ID         string `json:"id"`    // e.g. 'abc057'
+		Title      string `json:"title"` // e.g 'ABC057'
 		RateChange string `json:"rate_change"`
 	}
 
@@ -179,4 +179,3 @@ type (
 
 	ContestResults []*ContestResult
 )
-
