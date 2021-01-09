@@ -19,7 +19,7 @@ message ActualHistory {
   // Required. レート変動対象の範囲
   // 以下のフォーマットとする。
   // 1. unrated のコンテスト: "-"
-  // 2. rated のコンテスト: " ~ 1999", "2000 ~ "（参考：https://kenkoooo.com/atcoder/resources/contests.json）
+  // 2. rated のコンテスト: " ~ 1999", "2000 ~ ", "All"（参考：https://kenkoooo.com/atcoder/resources/contests.json）
   string rate_change = 1;
   // Required. パフォーマンス
   // コンテスト参加当時、レート変動対象内外に関わらず、もしパフォーマンスがつくならいくらか？という値を表す。
