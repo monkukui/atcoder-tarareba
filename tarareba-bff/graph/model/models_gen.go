@@ -3,7 +3,7 @@
 package model
 
 type Contest struct {
-	IsRated           bool   `json:"isRated"`
+	RateChange        string `json:"rateChange"`
 	Place             int    `json:"place"`
 	ActualOldRating   int    `json:"actualOldRating"`
 	ActualNewRating   int    `json:"actualNewRating"`

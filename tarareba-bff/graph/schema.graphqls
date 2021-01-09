@@ -1,5 +1,5 @@
 type Contest {
-  isRated: Boolean!
+  rateChange: String!
   place: Int!
   actualOldRating: Int!
   actualNewRating: Int!
@@ -21,7 +21,10 @@ type RatingTransition {
 
 type Query {
   contestsByUserID(userID: String): [Contest!]!
-  ratingTransitionByPerformance(isParticipated: [Boolean]!,
-                                performances: [Int]!,
-                                innerPerformances: [Int]!): [RatingTransition]!
+  ratingTransitionByPerformance(
+    rateChanges: [String]!,
+    isParticipated: [Boolean]!,
+    performances: [Int]!,
+    innerPerformances: [Int]!
+  ): [RatingTransition]!
 }

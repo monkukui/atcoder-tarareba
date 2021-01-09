@@ -51,16 +51,16 @@ type ComplexityRoot struct {
 		EndTime           func(childComplexity int) int
 		InnerPerformance  func(childComplexity int) int
 		IsParticipated    func(childComplexity int) int
-		IsRated           func(childComplexity int) int
 		OptimalNewRating  func(childComplexity int) int
 		OptimalOldRating  func(childComplexity int) int
 		Performance       func(childComplexity int) int
 		Place             func(childComplexity int) int
+		RateChange        func(childComplexity int) int
 	}
 
 	Query struct {
 		ContestsByUserID              func(childComplexity int, userID *string) int
-		RatingTransitionByPerformance func(childComplexity int, isParticipated []*bool, performances []*int, innerPerformances []*int) int
+		RatingTransitionByPerformance func(childComplexity int, rateChanges []*string, isParticipated []*bool, performances []*int, innerPerformances []*int) int
 	}
 
 	RatingTransition struct {
@@ -71,7 +71,7 @@ type ComplexityRoot struct {
 
 type QueryResolver interface {
 	ContestsByUserID(ctx context.Context, userID *string) ([]*model.Contest, error)
-	RatingTransitionByPerformance(ctx context.Context, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error)
+	RatingTransitionByPerformance(ctx context.Context, rateChanges []*string, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error)
 }
 
 type executableSchema struct {
@@ -145,13 +145,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Contest.IsParticipated(childComplexity), true
 
-	case "Contest.isRated":
-		if e.complexity.Contest.IsRated == nil {
-			break
-		}
-
-		return e.complexity.Contest.IsRated(childComplexity), true
-
 	case "Contest.optimalNewRating":
 		if e.complexity.Contest.OptimalNewRating == nil {
 			break
@@ -180,6 +173,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Contest.Place(childComplexity), true
 
+	case "Contest.rateChange":
+		if e.complexity.Contest.RateChange == nil {
+			break
+		}
+
+		return e.complexity.Contest.RateChange(childComplexity), true
+
 	case "Query.contestsByUserID":
 		if e.complexity.Query.ContestsByUserID == nil {
 			break
@@ -202,7 +202,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.RatingTransitionByPerformance(childComplexity, args["isParticipated"].([]*bool), args["performances"].([]*int), args["innerPerformances"].([]*int)), true
+		return e.complexity.Query.RatingTransitionByPerformance(childComplexity, args["rateChanges"].([]*string), args["isParticipated"].([]*bool), args["performances"].([]*int), args["innerPerformances"].([]*int)), true
 
 	case "RatingTransition.newRating":
 		if e.complexity.RatingTransition.NewRating == nil {
@@ -269,7 +269,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "graph/schema.graphqls", Input: `type Contest {
-  isRated: Boolean!
+  rateChange: String!
   place: Int!
   actualOldRating: Int!
   actualNewRating: Int!
@@ -291,9 +291,12 @@ type RatingTransition {
 
 type Query {
   contestsByUserID(userID: String): [Contest!]!
-  ratingTransitionByPerformance(isParticipated: [Boolean]!,
-                                performances: [Int]!,
-                                innerPerformances: [Int]!): [RatingTransition]!
+  ratingTransitionByPerformance(
+    rateChanges: [String]!,
+    isParticipated: [Boolean]!,
+    performances: [Int]!,
+    innerPerformances: [Int]!
+  ): [RatingTransition]!
 }
 `, BuiltIn: false},
 }
@@ -336,33 +339,42 @@ func (ec *executionContext) field_Query_contestsByUserID_args(ctx context.Contex
 func (ec *executionContext) field_Query_ratingTransitionByPerformance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*bool
+	var arg0 []*string
+	if tmp, ok := rawArgs["rateChanges"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rateChanges"))
+		arg0, err = ec.unmarshalNString2ᚕᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["rateChanges"] = arg0
+	var arg1 []*bool
 	if tmp, ok := rawArgs["isParticipated"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isParticipated"))
-		arg0, err = ec.unmarshalNBoolean2ᚕᚖbool(ctx, tmp)
+		arg1, err = ec.unmarshalNBoolean2ᚕᚖbool(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["isParticipated"] = arg0
-	var arg1 []*int
+	args["isParticipated"] = arg1
+	var arg2 []*int
 	if tmp, ok := rawArgs["performances"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("performances"))
-		arg1, err = ec.unmarshalNInt2ᚕᚖint(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["performances"] = arg1
-	var arg2 []*int
-	if tmp, ok := rawArgs["innerPerformances"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("innerPerformances"))
 		arg2, err = ec.unmarshalNInt2ᚕᚖint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["innerPerformances"] = arg2
+	args["performances"] = arg2
+	var arg3 []*int
+	if tmp, ok := rawArgs["innerPerformances"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("innerPerformances"))
+		arg3, err = ec.unmarshalNInt2ᚕᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["innerPerformances"] = arg3
 	return args, nil
 }
 
@@ -404,7 +416,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Contest_isRated(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
+func (ec *executionContext) _Contest_rateChange(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -422,7 +434,7 @@ func (ec *executionContext) _Contest_isRated(ctx context.Context, field graphql.
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.IsRated, nil
+		return obj.RateChange, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -434,9 +446,9 @@ func (ec *executionContext) _Contest_isRated(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Contest_place(ctx context.Context, field graphql.CollectedField, obj *model.Contest) (ret graphql.Marshaler) {
@@ -926,7 +938,7 @@ func (ec *executionContext) _Query_ratingTransitionByPerformance(ctx context.Con
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RatingTransitionByPerformance(rctx, args["isParticipated"].([]*bool), args["performances"].([]*int), args["innerPerformances"].([]*int))
+		return ec.resolvers.Query().RatingTransitionByPerformance(rctx, args["rateChanges"].([]*string), args["isParticipated"].([]*bool), args["performances"].([]*int), args["innerPerformances"].([]*int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2190,8 +2202,8 @@ func (ec *executionContext) _Contest(ctx context.Context, sel ast.SelectionSet, 
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Contest")
-		case "isRated":
-			out.Values[i] = ec._Contest_isRated(ctx, field, obj)
+		case "rateChange":
+			out.Values[i] = ec._Contest_rateChange(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2788,6 +2800,36 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOString2ᚖstring(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNString2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOString2ᚖstring(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {

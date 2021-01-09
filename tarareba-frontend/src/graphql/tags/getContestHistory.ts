@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 export const GET_CONTEST_HISTORY = gql`
   query($userID: String!) {
     contestsByUserID(userID: $userID) {
-      isRated
+      rateChange
       place
       actualOldRating
       actualNewRating
@@ -23,11 +23,13 @@ export const GET_CONTEST_HISTORY = gql`
 // パフォーマンス列を受け取り、レート推移を返す
 export const GET_RATING_TRANSITION = gql`
   query(
+    $rateChanges: [String]!
     $isParticipated: [Boolean]!
     $performances: [Int]!
     $innerPerformances: [Int]!
   ) {
     ratingTransitionByPerformance(
+      rateChanges: $rateChanges
       isParticipated: $isParticipated
       performances: $performances
       innerPerformances: $innerPerformances
