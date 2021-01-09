@@ -16,9 +16,15 @@ service TararebaService {
 
 message ActualHistory {
 
-  // Required. rated かどうか
-  bool is_rated = 1;
+  // Required. レート変動対象の範囲
+  // 以下のフォーマットとする。
+  // 1. unrated のコンテスト: "-"
+  // 2. rated のコンテスト: " ~ 1999", "2000 ~ "（参考：https://kenkoooo.com/atcoder/resources/contests.json）
+  string rate_change = 1;
+
   // Required. パフォーマンス
+  // コンテスト参加当時、レート変動対象内外に関わらず、もしパフォーマンスがつくならいくらか？という値を表す。
+  // is_rated = false の場合、performance は 0 とする。
   int32 performance = 2;
   // Required. 内部パフォーマンス
   int32 inner_performance = 3;
@@ -48,12 +54,17 @@ message GetOptimalHistoryResponse {
 
 message ContestPerformance {
 
+  // Required. レート変動対象の範囲
+  // 以下のフォーマットとする。
+  // 1. unrated のコンテスト: "-"
+  // 2. rated のコンテスト: " ~ 1999", "2000 ~ "（参考：https://kenkoooo.com/atcoder/resources/contests.json）
+  string rate_change = 1;
   // Required. 参加したかどうか。ユーザーが選択できる。
-  bool isParticipated = 1;
+  bool isParticipated = 2;
   // Required. パフォーマンス
-  int32 performance = 2;
+  int32 performance = 3;
   // Required. 内部パフォーマンス
-  int32 inner_performance = 3;
+  int32 inner_performance = 4;
 }
 
 message RatingTransition {
