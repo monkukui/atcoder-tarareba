@@ -54,9 +54,10 @@ message GetOptimalHistoryResponse {
 message ContestPerformance {
 
   // Required. レート変動対象の範囲
+  // Required. レート変動対象の範囲
   // 以下のフォーマットとする。
   // 1. unrated のコンテスト: "-"
-  // 2. rated のコンテスト: " ~ 1999", "2000 ~ "（参考：https://kenkoooo.com/atcoder/resources/contests.json）
+  // 2. rated のコンテスト: " ~ 1999", "2000 ~ ", "All"（参考：https://kenkoooo.com/atcoder/resources/contests.json）
   string rate_change = 1;
   // Required. 参加したかどうか。ユーザーが選択できる。
   bool isParticipated = 2;
