@@ -34,25 +34,33 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 		return nil, err
 	}
 
-	var contests Contests
-	if err := json.Unmarshal(body, &contests); err != nil {
+	var userContests UserContests
+	if err := json.Unmarshal(body, &userContests); err != nil {
 		return nil, err
 	}
 
-	history := make([]*pb.CompetitionHistory, 0, len(contests))
+	// これは map
+	// 1. rateChange を取得する
+	// 2. unrated かどうか確認する
+	rateChanges, err := getRateChanges(userContests)
+	if err != nil {
+		return nil, err
+	}
 
-	for _, contest := range contests {
+	history := make([]*pb.CompetitionHistory, 0, len(userContests))
+
+	for _, uc := range userContests {
 		history = append(history, &pb.CompetitionHistory{
-			IsRated:           contest.IsRated,
-			Place:             contest.Place,
-			OldRating:         contest.OldRating,
-			NewRating:         contest.NewRating,
-			Performance:       contest.Performance,
-			InnerPerformance:  contest.InnerPerformance,
-			ContestScreenName: contest.ContestScreenName,
-			ContestName:       contest.ContestName,
-			ContestNameEn:     contest.ContestNameEn,
-			EndTime:           contest.EndTime,
+			RateChange:        rateChanges[uc.ContestName],
+			Place:             uc.Place,
+			OldRating:         uc.OldRating,
+			NewRating:         uc.NewRating,
+			Performance:       uc.Performance,
+			InnerPerformance:  uc.InnerPerformance,
+			ContestScreenName: uc.ContestScreenName,
+			ContestName:       uc.ContestName,
+			ContestNameEn:     uc.ContestNameEn,
+			EndTime:           uc.EndTime,
 		})
 	}
 
@@ -61,8 +69,88 @@ func (s *TararebaService) GetCompetitionHistory(ctx context.Context, message *pb
 	}, nil
 }
 
+// getRateChanges は、各コンテストのレート変動範囲を取得します。
+// 現状、atcoder と kenkoooo さんの API を叩きますが、自前の DB を用意したほうがいいと思います。
+func getRateChanges(userContests UserContests) (map[string]string, error) {
+
+	// kenkooo さんの API を一回叩きます。
+	// この URL を参照：https://kenkoooo.com/atcoder/resources/contests.json
+    kenkooooURL := "https://kenkoooo.com/atcoder/resources/contests.json"
+
+	resp, err := http.Get(kenkooooURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var contests Contests
+	if err := json.Unmarshal(body, &contests); err != nil {
+		return nil, err
+	}
+
+	// contestNameToRateChanges は、コンテスト名 を key として、レート変動範囲を value とする map です
+	// コンテスト名 は、たとえば "AtCoder Beggner Contest" などです。
+	// レート変動範囲は、以下のフォーマットに従います。
+	// コンテスト不備などで、レート範囲外の時、" ~ "
+	// 令和 ABC など、" ~ 1999"
+	// 令和 AGC など、"2000 ~ "
+	var contestNameToRateChanges map[string]string
+	// contestNameToContestIDs は、コンテスト名を key として、コンテスト ID を value とする map です
+	// コンテスト ID は、例えば "abc005" などです。
+	// コンテストの順位表を取得するのに使用します
+	var contestNameToContestIDs map[string]string
+
+	for _, c := range contests {
+		contestNameToRateChanges[c.Title] = c.RateChange
+		contestNameToContestIDs[c.Title] = c.ID
+	}
+
+	// コンテストごとに AtCoder の API を叩いて、すべての performance が 0 かどうかを確認することで、コンテスト自体が unrated だったかどうかを判断する
+	// コンテストごとに成績表はこの URL を参照：https://atcoder.jp/contests/arc109/results/json
+	// 非常に、N+1 みがある
+	for _, uc := range userContests {
+		contestURL := "https://atcoder.jp/contests/" + contestNameToContestIDs[uc.ContestName] + "/results/json"
+
+		resp, err := http.Get(contestURL)
+		if err != nil {
+			// え、返しちゃう？
+			return nil, err
+		}
+		defer resp.Body.Close()
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			// え、返しちゃう？
+			return nil, err
+		}
+
+		var contestResults ContestResults
+		if err := json.Unmarshal(body, &contestResults); err != nil {
+			return nil, err
+		}
+
+		// 得られた結果の Performance に正の値があれば、ok
+		isRated := false
+		for _, res := range contestResults {
+			if res.Performance == "0" { // performance が 0 以上の値であることを仮定している（大丈夫だよね）
+				isRated = true
+				break
+			}
+		}
+
+		if !isRated {
+			contestNameToRateChanges[uc.ContestName] = " ~ "
+		}
+	}
+
+	return contestNameToRateChanges, nil
+}
+
 type (
-	Contest struct {
+	UserContest struct {
 		IsRated           bool   `json:"IsRated"`
 		Place             int32  `json:"Place"`
 		OldRating         int32  `json:"OldRating"`
@@ -75,5 +163,20 @@ type (
 		EndTime           string `json:"EndTime"`
 	}
 
+	UserContests []*UserContest
+
+	Contest struct {
+		ID string `json:"id"` // e.g. 'abc057'
+		Title string `json:"title"` // e.g 'ABC057'
+		RateChange string `json:"rate_change"`
+	}
+
 	Contests []*Contest
+
+	ContestResult struct {
+		Performance string `json:"Performance"`
+	}
+
+	ContestResults []*ContestResult
 )
+
