@@ -21,7 +21,10 @@ type RatingTransition {
 
 type Query {
   contestsByUserID(userID: String): [Contest!]!
-  ratingTransitionByPerformance(isParticipated: [Boolean]!,
-                                performances: [Int]!,
-                                innerPerformances: [Int]!): [RatingTransition]!
+  ratingTransitionByPerformance(
+    rateChange: [String]!,
+    isParticipated: [Boolean]!,
+    performances: [Int]!,
+    innerPerformances: [Int]!
+  ): [RatingTransition]!
 }

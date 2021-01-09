@@ -85,7 +85,7 @@ func (r *queryResolver) ContestsByUserID(ctx context.Context, userID *string) ([
 	return contests, nil
 }
 
-func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error) {
+func (r *queryResolver) RatingTransitionByPerformance(ctx context.Context, rateChange []*string, isParticipated []*bool, performances []*int, innerPerformances []*int) ([]*model.RatingTransition, error) {
 	if len(isParticipated) != len(performances) {
 		panic("")
 	}
