@@ -11,7 +11,7 @@ AtCoder tarareba は、過去を改竄してレートを最大化するサービ
 - Go（サーバーサイド全般）（主要アルゴリズム）
 - gqlgen（Go で GraphQL を書くためのフレームワーク。サーバーサイドと GraphQL をつなぐ）[参考](https://gqlgen.com/getting-started/)
 - grpc-go [参考](https://github.com/grpc/grpc-go)
-- React （今一番いけてるフロントエンドのフレームワーク。AtCoder Problems もこれ） [参考](https://ja.reactjs.org/)
+- React （フロントエンドのフレームワーク。AtCoder Problems もこれ） [参考](https://ja.reactjs.org/)
 - Appolo Client（GraphQL を React につなぐためのフレームワーク）[参考](https://www.apollographql.com/docs/react/)
 
 ## アーキテクチャ
